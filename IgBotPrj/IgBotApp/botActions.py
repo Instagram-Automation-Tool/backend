@@ -2,7 +2,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.environ["PATH"] += os.pathsep + os.path.join(BASE_DIR, "/gecko")
-from django.test import TestCase
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -11,8 +11,8 @@ import time
 import pickle
 
 
-class WebdriverActions(TestCase):
-    def StoreLoginCredentials(self):
+class WebdriverActions:
+    def StoreLoginCredentials():
         chrome_options = Options()
         chrome_options.add_experimental_option("detach", True)
         driver = webdriver.Chrome(chrome_options=chrome_options)
