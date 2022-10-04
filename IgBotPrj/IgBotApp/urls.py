@@ -10,4 +10,9 @@ urlpatterns = [
         views.requestStoreCredentials,
         name="function_storecredentials",
     ),
+    path(
+        "loadcredentials",
+        views.requestLoadCredentials,
+        name="function_loadcredentials",
+    ),
 ]

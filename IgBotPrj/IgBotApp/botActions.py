@@ -25,30 +25,23 @@ class WebdriverActions:
         # cookies = ",".join(str(v) for v in driver.get_cookies())
         # print(cookies)
         # print(SaveCredentials.ParseCookies(cookies))
-        print(driver.get_cookies())
 
         time.sleep(14)
-        f = open("file.pkl", "wb")
-        pickle.dump(dict, f)
-        f.close()
+        with open("saved_dictionary.pkl", "wb") as f:
+            pickle.dump(driver.get_cookies(), f)
         print("\nCredentials saved!\n\n")
 
-    def LoadSession(self):
+    def LoadSession():
         chrome_options = Options()
         chrome_options.add_experimental_option("detach", True)
         driver = webdriver.Chrome(chrome_options=chrome_options)
         driver.get("https://www.instagram.com/")
 
-        with open("file.pkl", "wb") as handle:
-            data = handle.read()
+        with open("saved_dictionary.pkl", "rb") as f:
+            loaded_dict = pickle.load(f)
 
-        print("Data type before reconstruction : ", type(data))
-
-        # reconstructing the data as dictionary
-        d = pickle.loads(data)
-
-        print("Data type after reconstruction : ", type(d))
-        print(d)
+        print(loaded_dict)
+        print("Done bruh")
 
     # def ParseCookies(cookiesString):
     #     parsed = Json.loads(cookiesString)
