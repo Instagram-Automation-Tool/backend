@@ -27,8 +27,9 @@ class WebdriverActions:
         # print(SaveCredentials.ParseCookies(cookies))
 
         time.sleep(14)
+        dict = driver.get_cookies()
         with open("saved_dictionary.pkl", "wb") as f:
-            pickle.dump(driver.get_cookies(), f)
+            pickle.dump(dict, f)
         print("\nCredentials saved!\n\n")
 
     def LoadSession():
@@ -36,11 +37,25 @@ class WebdriverActions:
         chrome_options.add_experimental_option("detach", True)
         driver = webdriver.Chrome(chrome_options=chrome_options)
         driver.get("https://www.instagram.com/")
+        driver.find_element(By.XPATH, "/html/body/div[4]/div/div/button[1]").click()
 
         with open("saved_dictionary.pkl", "rb") as f:
             loaded_dict = pickle.load(f)
 
-        print(loaded_dict)
+        for cookie in loaded_dict:
+            print(cookie)
+            driver.add_cookie(
+                {
+                    "name": cookie["name"],
+                    "value": cookie["value"],
+                    "path": cookie["path"],
+                    "domain": cookie["domain"],
+                    "secure": cookie["secure"],
+                }
+            )
+
+        print(driver.get_cookies())
+
         print("Done bruh")
 
     # def ParseCookies(cookiesString):
