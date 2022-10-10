@@ -25,10 +25,10 @@ class WebdriverActions:
         driver = webdriver.Chrome(chrome_options=chrome_options)
         driver.get("https://www.instagram.com/")
         driver.find_element(By.XPATH, "/html/body/div[4]/div/div/button[1]").click()
+
         print(
             "\nLogin to your Instagram account.\nAfter 20 seconds, your credentials will be stored for later automatic logins.\n\n"
         )
-
         time.sleep(20)
         WebdriverActions.SaveCookies(driver)
         print("\nCredentials saved.\n\n")
@@ -41,7 +41,6 @@ class WebdriverActions:
         driver.find_element(By.XPATH, "/html/body/div[4]/div/div/button[1]").click()
 
         WebdriverActions.LoadCookies(driver)
-
         print("\nLoaded session.\n\n")
 
     def FollowProfile(username):
@@ -69,13 +68,11 @@ class WebdriverActions:
         driver.get("https://www.instagram.com/" + link)
 
         WebdriverActions.LoadCookies(driver)
-
         WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
             "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div[1]/div[1]/article/div/div[2]/div/div[2]/section[1]/span[1]/button",
         ).click()
-
         print("\nLiked post.\n\n")
 
     # helper functions
