@@ -8,11 +8,13 @@ urlpatterns = [
     path(
         "storecredentials",
         views.requestStoreCredentials,
-        name="function_storecredentials",
     ),
     path(
         "loadcredentials",
         views.requestLoadCredentials,
-        name="function_loadcredentials",
+    ),
+    path(
+        "follow/<username>",
+        views.requestFollowProfile,
     ),
 ]
