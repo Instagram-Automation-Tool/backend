@@ -20,5 +20,7 @@ If the enviroment was succesfully activated you should see this at the beginning
 
 # Dependenices
 pip install djangorestframework
+
 pip install django-cors-headers
+
 pip install djangorestframework-simplejwt
