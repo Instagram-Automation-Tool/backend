@@ -83,7 +83,11 @@ class WebdriverActions:
         driver.get("https://www.instagram.com/" + link)
 
         WebdriverActions.LoadCookies(driver)
-
+        WebdriverActions.WaitForElement(
+            driver,
+            By.XPATH,
+            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div[1]/div[1]/article/div/div[2]/div/div[2]/section[3]/div/form/textarea",
+        ).send_keys(comment + Keys.ENTER)
         print("\nCommented on post.\n\n")
 
     # helper functions

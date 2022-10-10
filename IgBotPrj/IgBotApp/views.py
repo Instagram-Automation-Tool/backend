@@ -30,4 +30,7 @@ def requestLikePost(request):
 
 
 def requestCommentOnPost(request):
+    WebDriverManager.WebdriverActions.CommentOnPost(
+        request.GET.get("link", ""), request.GET.get("comment", "")
+    )
     return HttpResponse("Commented")
