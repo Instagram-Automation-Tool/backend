@@ -40,19 +40,7 @@ class WebdriverActions:
         driver.get("https://www.instagram.com/")
         driver.find_element(By.XPATH, "/html/body/div[4]/div/div/button[1]").click()
 
-        with open("saved_dictionary.pkl", "rb") as f:
-            loaded_dict = pickle.load(f)
-
-        for cookie in loaded_dict:
-            driver.add_cookie(
-                {
-                    "name": cookie["name"],
-                    "value": cookie["value"],
-                    "path": cookie["path"],
-                    "domain": cookie["domain"],
-                    "secure": cookie["secure"],
-                }
-            )
+        WebdriverActions.LoadCookies(driver)
 
         print("\nLoaded session.\n\n")
 
@@ -63,9 +51,11 @@ class WebdriverActions:
         driver.get("https://www.instagram.com/" + username)
 
         WebdriverActions.WaitForElement(
-            By.XPATH, "/html/body/div[4]/div/div/button[1]"
+            driver, By.XPATH, "/html/body/div[4]/div/div/button[1]"
         ).click()
+        WebdriverActions.LoadCookies(driver)
         WebdriverActions.WaitForElement(
+            driver,
             By.XPATH,
             "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[3]/div/div[1]/button/div",
         ).click()
@@ -73,7 +63,7 @@ class WebdriverActions:
         print("\Followed " + username + "\n\n")
 
     # helper functions
-    def WaitForElement(by, value):
+    def WaitForElement(driver, by, value):
         wait = WebDriverWait(
             driver,
             timeout=10,
@@ -99,7 +89,7 @@ class WebdriverActions:
         with open("saved_dictionary.pkl", "wb") as f:
             pickle.dump(dict, f)
 
-    def LoadCookies():
+    def LoadCookies(driver):
         with open("saved_dictionary.pkl", "rb") as f:
             loaded_dict = pickle.load(f)
 
