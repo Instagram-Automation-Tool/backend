@@ -16,3 +16,9 @@ If the enviroment was succesfully activated you should see this at the beginning
 4. Install Django
 ```pip install Django```
 
+
+
+# Dependenices
+pip install djangorestframework
+pip install django-cors-headers
+pip install djangorestframework-simplejwt
