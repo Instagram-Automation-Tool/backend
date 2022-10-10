@@ -17,3 +17,8 @@ def requestStoreCredentials(request):
 def requestLoadCredentials(request):
     botActions.WebdriverActions.LoadSession()
     return HttpResponse("Loaded credentials")
+
+
+def requestFollowProfile(request, username):
+    botActions.WebdriverActions.FollowProfile(username)
+    return HttpResponse("Followed guy")
