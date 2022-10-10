@@ -11,4 +11,14 @@ def PanelView(request):
 
 def requestStoreCredentials(request):
     botActions.WebdriverActions.StoreLoginCredentials()
-    return HttpResponse("awdwa")
+    return HttpResponse("Stored credentials")
+
+
+def requestLoadCredentials(request):
+    botActions.WebdriverActions.LoadSession()
+    return HttpResponse("Loaded credentials")
+
+
+def requestFollowProfile(request, username):
+    botActions.WebdriverActions.FollowProfile(username)
+    return HttpResponse("Followed guy")
