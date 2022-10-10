@@ -14,8 +14,9 @@ urlpatterns = [
         views.requestLoadCredentials,
     ),
     path(
-        "follow/<username>",
+        "follow",
         views.requestFollowProfile,
     ),
-    re_path("like", views.requestLikePost),
+    path("like", views.requestLikePost),
+    path("comment", views.requestCommentOnPost),
 ]

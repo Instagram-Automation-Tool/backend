@@ -14,6 +14,7 @@ from selenium.common.exceptions import (
     ElementNotVisibleException,
     ElementNotSelectableException,
 )
+import urllib.parse
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import pickle
@@ -56,7 +57,7 @@ class WebdriverActions:
         WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
-            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[3]/div/div[1]/button/div",
+            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[1]/div/div[2]/button",
         ).click()
 
         print("\Followed " + username + "\n\n")
@@ -65,7 +66,7 @@ class WebdriverActions:
         chrome_options = Options()
         chrome_options.add_experimental_option("detach", True)
         driver = webdriver.Chrome(chrome_options=chrome_options)
-        driver.get("https://www.instagram.com/" + link)
+        driver.get("https://www.instagram.com/" + urllib.parse.unquote(link))
 
         WebdriverActions.LoadCookies(driver)
         WebdriverActions.WaitForElement(
@@ -74,6 +75,16 @@ class WebdriverActions:
             "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div[1]/div[1]/article/div/div[2]/div/div[2]/section[1]/span[1]/button",
         ).click()
         print("\nLiked post.\n\n")
+
+    def CommentOnPost(link, comment):
+        chrome_options = Options()
+        chrome_options.add_experimental_option("detach", True)
+        driver = webdriver.Chrome(chrome_options=chrome_options)
+        driver.get("https://www.instagram.com/" + link)
+
+        WebdriverActions.LoadCookies(driver)
+
+        print("\nCommented on post.\n\n")
 
     # helper functions
     def WaitForElement(driver, by, value):
