@@ -51,13 +51,15 @@ class WebdriverActions:
         driver.get("https://www.instagram.com/" + username)
 
         WebdriverActions.WaitForElement(
-            driver, By.XPATH, "/html/body/div[4]/div/div/button[1]"
+            driver,
+            By.XPATH,
+            "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[1]",
         ).click()
         WebdriverActions.LoadCookies(driver)
         WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
-            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[1]/div/div[2]/button",
+            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[2]/button/div/div",
         ).click()
 
         print("\Followed " + username + "\n\n")
