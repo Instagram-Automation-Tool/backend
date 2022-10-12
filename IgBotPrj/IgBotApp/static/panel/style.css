@@ -1,0 +1,15 @@
+.title {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+
+
+.form-group {
+    align-items: center;
+    margin-left: 40%;
+    margin-right: 40%;
+    display: flex;
+    flex-flow: column;
+    gap: 10px
+}
