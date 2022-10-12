@@ -13,6 +13,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import (
     ElementNotVisibleException,
     ElementNotSelectableException,
+    StaleElementReferenceException,
 )
 import urllib.parse
 from selenium.webdriver.support import expected_conditions as EC
@@ -44,11 +45,11 @@ class WebdriverActions:
         WebdriverActions.LoadCookies(driver)
         print("\nLoaded session.\n\n")
 
-    def FollowProfile(username):
+    def FollowProfile(link):
         chrome_options = Options()
         chrome_options.add_experimental_option("detach", True)
         driver = webdriver.Chrome(chrome_options=chrome_options)
-        driver.get("https://www.instagram.com/" + username)
+        driver.get(link)
 
         WebdriverActions.WaitForElement(
             driver,
@@ -62,13 +63,13 @@ class WebdriverActions:
             "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[2]/button/div/div",
         ).click()
 
-        print("\Followed " + username + "\n\n")
+        print("\nFollowed " + link.split("/")[3] + "\n\n")
 
     def LikePost(link):
         chrome_options = Options()
         chrome_options.add_experimental_option("detach", True)
         driver = webdriver.Chrome(chrome_options=chrome_options)
-        driver.get("https://www.instagram.com/" + urllib.parse.unquote(link))
+        driver.get(urllib.parse.unquote(link))
 
         WebdriverActions.LoadCookies(driver)
         WebdriverActions.WaitForElement(
@@ -82,14 +83,24 @@ class WebdriverActions:
         chrome_options = Options()
         chrome_options.add_experimental_option("detach", True)
         driver = webdriver.Chrome(chrome_options=chrome_options)
-        driver.get("https://www.instagram.com/" + link)
+        driver.get(link)
 
         WebdriverActions.LoadCookies(driver)
-        WebdriverActions.WaitForElement(
+
+        webElement = WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
             "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div[1]/div[1]/article/div/div[2]/div/div[2]/section[3]/div/form/textarea",
-        ).send_keys(comment + Keys.ENTER)
+        )
+        webElement.click()
+        webElement = WebdriverActions.WaitForElement(
+            driver,
+            By.XPATH,
+            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div[1]/div[1]/article/div/div[2]/div/div[2]/section[3]/div/form/textarea",
+        )
+
+        webElement.send_keys(comment + Keys.ENTER)
+
         print("\nCommented on post.\n\n")
 
     # helper functions
@@ -101,6 +112,7 @@ class WebdriverActions:
             ignored_exceptions=[
                 ElementNotVisibleException,
                 ElementNotSelectableException,
+                StaleElementReferenceException,
             ],
         )
 

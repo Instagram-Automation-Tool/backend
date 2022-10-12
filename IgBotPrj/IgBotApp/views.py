@@ -19,7 +19,7 @@ def requestLoadCredentials(request):
 
 
 def requestFollowProfile(request):
-    WebDriverManager.WebdriverActions.FollowProfile(request.GET.get("username", ""))
+    WebDriverManager.WebdriverActions.FollowProfile(request.GET.get("link", ""))
     return HttpResponse("Followed guy")
 
 
