@@ -84,7 +84,6 @@ class WebdriverActions:
         chrome_options.add_experimental_option("detach", True)
         driver = webdriver.Chrome(chrome_options=chrome_options)
         driver.get(link)
-
         WebdriverActions.LoadCookies(driver)
 
         webElement = WebdriverActions.WaitForElement(
