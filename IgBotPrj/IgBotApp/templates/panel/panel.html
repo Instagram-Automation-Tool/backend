@@ -1,0 +1,35 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'panel/style.css' %}">
+
+<div>
+    <div class="title">
+        Instagram Bot Functions Showcase
+    </div>
+
+    <div class="form-group">
+        <form class="form-group" action="storecredentials" method="get">
+            <button type="submit" class="btn">Remember credentials</button>
+        </form>
+        <hr>
+        <form class="form-group" action="/follow" method="get">
+            <label>Follow somebody: </label>
+            <input id="username" type="text" name="username" value="instagram.com/migos/">
+            <input type="submit" value="Follow profile">
+        </form>
+
+        <form class="form-group" action="/like" method="get">
+            <label>Like a post: </label>
+            <input id="link" type="text" name="link" value="https://www.instagram.com/p/ChslcDvvQqE">
+            <input type="submit" value="Like post">
+        </form>
+
+        <form class="form-group" action="/like" method="get">
+            <label>Link to post: </label>
+            <input id="link" type="text" name="link" value="https://www.instagram.com/p/ChslcDvvQqE">
+            <label>Comment: </label>
+            <input id="link" type="text" name="link" value="This is so cool 🔥🔥">
+            <input type="submit" value="Leave a comment">
+        </form>
+    </div>
+</div>

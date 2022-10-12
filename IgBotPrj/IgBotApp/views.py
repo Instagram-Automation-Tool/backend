@@ -5,8 +5,7 @@ from . import WebDriverManager
 
 
 def PanelView(request):
-    template = loader.get_template("panel.html")
-    return HttpResponse(template.render())
+    return render(request, "panel/panel.html")
 
 
 def requestStoreCredentials(request):
