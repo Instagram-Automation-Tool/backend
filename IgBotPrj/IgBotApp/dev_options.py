@@ -1,2 +1,2 @@
-Headless = True
+Headless = False
 ProxiesEnabled = False
