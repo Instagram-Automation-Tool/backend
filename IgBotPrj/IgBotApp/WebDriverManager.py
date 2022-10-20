@@ -4,6 +4,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.environ["PATH"] += os.pathsep + os.path.join(BASE_DIR, "/gecko")
 
+from . import dev_options
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -23,7 +24,7 @@ import pickle
 
 class WebdriverActions:
     def StoreLoginCredentials():
-        chrome_options = Options()
+        chrome_options = WebdriverActions.GetOptions()
         driver = webdriver.Chrome(chrome_options=chrome_options)
         driver.get("https://www.instagram.com/")
         driver.find_element(By.XPATH, "/html/body/div[4]/div/div/button[1]").click()
@@ -36,7 +37,7 @@ class WebdriverActions:
         print("\nCredentials saved.\n\n")
 
     def LoadSession():
-        chrome_options = Options()
+        chrome_options = WebdriverActions.GetOptions()
         chrome_options.add_experimental_option("detach", True)
         driver = webdriver.Chrome(chrome_options=chrome_options)
         driver.get("https://www.instagram.com/")
@@ -46,7 +47,7 @@ class WebdriverActions:
         print("\nLoaded session.\n\n")
 
     def FollowProfile(link):
-        chrome_options = Options()
+        chrome_options = WebdriverActions.GetOptions()
         chrome_options.add_experimental_option("detach", True)
         driver = webdriver.Chrome(chrome_options=chrome_options)
         driver.get(link)
@@ -66,7 +67,7 @@ class WebdriverActions:
         print("\nFollowed " + link.split("/")[3] + "\n\n")
 
     def LikePost(link):
-        chrome_options = Options()
+        chrome_options = WebdriverActions.GetOptions()
         chrome_options.add_experimental_option("detach", True)
         driver = webdriver.Chrome(chrome_options=chrome_options)
         driver.get(urllib.parse.unquote(link))
@@ -80,7 +81,7 @@ class WebdriverActions:
         print("\nLiked post.\n\n")
 
     def CommentOnPost(link, comment):
-        chrome_options = Options()
+        chrome_options = WebdriverActions.GetOptions()
         chrome_options.add_experimental_option("detach", True)
         driver = webdriver.Chrome(chrome_options=chrome_options)
         driver.get(link)
@@ -103,6 +104,12 @@ class WebdriverActions:
         print("\nCommented on post.\n\n")
 
     # helper functions
+    def GetOptions():
+        chromeOptions = Options()
+        if dev_options.Headless:
+            chromeOptions.add_argument("--headless")
+        return chromeOptions
+
     def WaitForElement(driver, by, value):
         wait = WebDriverWait(
             driver,
