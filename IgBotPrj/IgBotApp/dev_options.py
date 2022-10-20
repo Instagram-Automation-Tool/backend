@@ -1,0 +1,2 @@
+Headless = True
+ProxiesEnabled = False
