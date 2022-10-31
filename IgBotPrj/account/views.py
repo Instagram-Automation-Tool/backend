@@ -85,3 +85,8 @@ class LogoutAPIView(APIView):
         serializer.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class CurrentUserView(APIView):
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
