@@ -1,2 +1,3 @@
 Headless = False
-ProxiesEnabled = False
+Proxyless = True
+KeepWindowOpenOnFinish = False
