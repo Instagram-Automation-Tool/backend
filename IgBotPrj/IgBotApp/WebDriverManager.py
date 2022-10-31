@@ -24,8 +24,7 @@ import pickle
 
 class WebdriverActions:
     def StoreLoginCredentials():
-        chrome_options = WebdriverActions.GetOptions()
-        driver = webdriver.Chrome(chrome_options=chrome_options)
+        driver = WebdriverActions.GetWebDriver()
         driver.get("https://www.instagram.com/")
         driver.find_element(By.XPATH, "/html/body/div[4]/div/div/button[1]").click()
 
@@ -37,9 +36,7 @@ class WebdriverActions:
         print("\nCredentials saved.\n\n")
 
     def LoadSession():
-        chrome_options = WebdriverActions.GetOptions()
-        chrome_options.add_experimental_option("detach", True)
-        driver = webdriver.Chrome(chrome_options=chrome_options)
+        driver = WebdriverActions.GetWebDriver()
         driver.get("https://www.instagram.com/")
         driver.find_element(By.XPATH, "/html/body/div[4]/div/div/button[1]").click()
 
@@ -47,9 +44,7 @@ class WebdriverActions:
         print("\nLoaded session.\n\n")
 
     def FollowProfile(link):
-        chrome_options = WebdriverActions.GetOptions()
-        chrome_options.add_experimental_option("detach", True)
-        driver = webdriver.Chrome(chrome_options=chrome_options)
+        driver = WebdriverActions.GetWebDriver()
         driver.get(link)
 
         WebdriverActions.WaitForElement(
@@ -67,9 +62,7 @@ class WebdriverActions:
         print("\nFollowed " + link.split("/")[3] + "\n\n")
 
     def LikePost(link):
-        chrome_options = WebdriverActions.GetOptions()
-        chrome_options.add_experimental_option("detach", True)
-        driver = webdriver.Chrome(chrome_options=chrome_options)
+        driver = WebdriverActions.GetWebDriver()
         driver.get(urllib.parse.unquote(link))
 
         WebdriverActions.LoadCookies(driver)
@@ -81,9 +74,7 @@ class WebdriverActions:
         print("\nLiked post.\n\n")
 
     def CommentOnPost(link, comment):
-        chrome_options = WebdriverActions.GetOptions()
-        chrome_options.add_experimental_option("detach", True)
-        driver = webdriver.Chrome(chrome_options=chrome_options)
+        driver = WebdriverActions.GetWebDriver()
         driver.get(link)
         WebdriverActions.LoadCookies(driver)
 
@@ -104,10 +95,20 @@ class WebdriverActions:
         print("\nCommented on post.\n\n")
 
     # helper functions
+    def GetWebDriver():
+        chrome_options = WebdriverActions.GetOptions()
+        return webdriver.Chrome(
+            BASE_DIR + "/chromedriver.exe", chrome_options=chrome_options
+        )
+
     def GetOptions():
         chromeOptions = Options()
         if dev_options.Headless:
             chromeOptions.add_argument("--headless")
+        if dev_options.Proxyless != True:
+            chromeOptions.add_argument("--proxy-server=%s" % "hostname" + ":" + "port")
+        if dev_options.KeepWindowOpenOnFinish == True:
+            chromeOptions.add_experimental_option("detach", True)
         return chromeOptions
 
     def WaitForElement(driver, by, value):
