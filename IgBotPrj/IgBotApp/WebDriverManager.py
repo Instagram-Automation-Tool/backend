@@ -1,6 +1,9 @@
 from lib2to3.pgen2 import driver
 import os
 
+from IgBotApp.models import InstagramAccount
+
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.environ["PATH"] += os.pathsep + os.path.join(BASE_DIR, "/gecko")
 
@@ -26,12 +29,24 @@ class WebdriverActions:
     def StoreLoginCredentials():
         driver = WebdriverActions.GetWebDriver()
         driver.get("https://www.instagram.com/")
-        driver.find_element(By.XPATH, "/html/body/div[4]/div/div/button[1]").click()
+        WebdriverActions.WaitForElement(
+            driver,
+            By.XPATH,
+            "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[1]",
+        ).click()
 
         print(
             "\nLogin to your Instagram account.\nAfter 20 seconds, your credentials will be stored for later automatic logins.\n\n"
         )
         time.sleep(20)
+        # replace mock data with real acount data
+        bruh = InstagramAccount(
+            expandiId=3,
+            username="test3123",
+            cookies=driver.get_cookies(),
+            proxy="1.1.1.1:1234",
+        )
+        bruh.save()
         WebdriverActions.SaveCookies(driver)
         print("\nCredentials saved.\n\n")
 
