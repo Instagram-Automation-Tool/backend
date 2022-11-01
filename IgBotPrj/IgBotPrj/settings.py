@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import django
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -84,11 +85,16 @@ WSGI_APPLICATION = "IgBotPrj.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": "instagram",
         "USER": "gereryert4",
         "PASSWORD": "2o4krt2gnuoiA",
-        "HOST": "expandi.mysql.database.azure.com",
+        "HOST": "expandi.postgres.database.azure.com",
+        "PORT": "5432",
+        # "OPTIONS": {
+        #     "sslmode": "verify-full",
+        #     "sslrootcert": os.path.join(BASE_DIR, "ca-certificate.crt"),
+        # },
     }
 }
 

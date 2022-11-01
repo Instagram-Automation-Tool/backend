@@ -26,30 +26,33 @@ import pickle
 
 
 class WebdriverActions:
-    def StoreLoginCredentials(username,password):
+    def StoreLoginCredentials(username, password):
         driver = WebdriverActions.GetWebDriver()
         # driver.set_window_size(500, 695)
         driver.get("https://www.instagram.com/")
         # driver.find_element(By.XPATH, "/html/body/div[4]/div/div/button[1]").click()
-        time.sleep(20)
 
         try:
-            driver.find_element(By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[1]").click()
+            WebdriverActions.WaitForElement(
+                driver,
+                By.XPATH,
+                "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[1]",
+            ).click()
         except:
             print("NO COOKIES")
 
-         
-        username_input = driver.find_element(By.XPATH, "//*[@id='loginForm']/div/div[1]/div/label/input")
-        password_input = driver.find_element(By.XPATH, "//*[@id='loginForm']/div/div[2]/div/label/input")
-        
+        username_input = WebdriverActions.WaitForElement(
+            driver, By.XPATH, "//*[@id='loginForm']/div/div[1]/div/label/input"
+        )
+        password_input = WebdriverActions.WaitForElement(
+            driver, By.XPATH, "//*[@id='loginForm']/div/div[2]/div/label/input"
+        )
 
         username_input.send_keys(username)
         password_input.send_keys(password)
 
         WebdriverActions.WaitForElement(
-            driver,
-            By.XPATH,
-            "//button[@type='submit']"
+            driver, By.XPATH, "//button[@type='submit']"
         ).click()
 
         print(
@@ -60,6 +63,7 @@ class WebdriverActions:
         bruh = InstagramAccount(
             expandiId=3,
             username="test3123",
+            password=password,
             cookies=driver.get_cookies(),
             proxy="1.1.1.1:1234",
         )
@@ -130,7 +134,7 @@ class WebdriverActions:
     def GetWebDriver():
         chrome_options = WebdriverActions.GetOptions()
         return webdriver.Chrome(
-            BASE_DIR + "/chromedriver", chrome_options=chrome_options
+            BASE_DIR + "/chromedriver.exe", chrome_options=chrome_options
         )
 
     def GetOptions():
