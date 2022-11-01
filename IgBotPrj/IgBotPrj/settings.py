@@ -90,7 +90,6 @@ DATABASES = {
         "USER": "gereryert4",
         "PASSWORD": "2o4krt2gnuoiA",
         "HOST": "expandi.postgres.database.azure.com",
-        "PORT": "5432",
         # "OPTIONS": {
         #     "sslmode": "verify-full",
         #     "sslrootcert": os.path.join(BASE_DIR, "ca-certificate.crt"),
