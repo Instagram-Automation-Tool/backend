@@ -1,41 +1,57 @@
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'panel/style.css' %}">
+<link rel="stylesheet" href="{% static 'panel/style.css' %}" />
 
 <head>
-    <title>DEMO</title>
+  <title>DEMO</title>
 </head>
 <div>
-    <div class="form-group">
-
-        <div class="title">
-            <h1 style="font-size:medium">Sprint 2 API Application Demonstration</h1>
-        </div>
-
-        <form class="form-group" action="storecredentials" method="get">
-            <button type="submit" class="btn">Remember credentials</button>
-        </form>
-        <form class="form-group" action="loadcredentials" method="get">
-            <button type="submit" class="btn">Load saved session</button>
-        </form>
-        <form class="form-group" action="/follow" method="get">
-            <label>Profile URL: </label>
-            <input id="link" type="text" name="link" value="https://instagram.com/migos/">
-            <input type="submit" value="Follow profile">
-        </form>
-
-        <form class="form-group" action="/like" method="get">
-            <label>Post URL: </label>
-            <input id="link" type="text" name="link" value="https://www.instagram.com/p/ChslcDvvQqE">
-            <input type="submit" value="Like post">
-        </form>
-
-        <form class="form-group" action="/comment" method="get">
-            <label>Post URL: </label>
-            <input id="link" type="text" name="link" value="https://www.instagram.com/p/ChslcDvvQqE">
-            <label>Comment: </label>
-            <input id="comment" type="text" name="comment" value="This is so cool!">
-            <input type="submit" value="Leave a comment">
-        </form>
+  <div class="form-group">
+    <div class="title">
+      <h1 style="font-size: medium">Sprint 2 API Application Demonstration</h1>
     </div>
+
+    <form class="form-group" action="storecredentials" method="get">
+      <input id="username" type="text" name="username" value="" />
+      <input id="password" type="text" name="password" value="" />
+      <button type="submit" class="btn">Remember credentials</button>
+    </form>
+    <form class="form-group" action="loadcredentials" method="get">
+      <button type="submit" class="btn">Load saved session</button>
+    </form>
+    <form class="form-group" action="/follow" method="get">
+      <label>Profile URL: </label>
+      <input
+        id="link"
+        type="text"
+        name="link"
+        value="https://instagram.com/migos/"
+      />
+      <input type="submit" value="Follow profile" />
+    </form>
+
+    <form class="form-group" action="/like" method="get">
+      <label>Post URL: </label>
+      <input
+        id="link"
+        type="text"
+        name="link"
+        value="https://www.instagram.com/p/ChslcDvvQqE"
+      />
+      <input type="submit" value="Like post" />
+    </form>
+
+    <form class="form-group" action="/comment" method="get">
+      <label>Post URL: </label>
+      <input
+        id="link"
+        type="text"
+        name="link"
+        value="https://www.instagram.com/p/ChslcDvvQqE"
+      />
+      <label>Comment: </label>
+      <input id="comment" type="text" name="comment" value="This is so cool!" />
+      <input type="submit" value="Leave a comment" />
+    </form>
+  </div>
 </div>
