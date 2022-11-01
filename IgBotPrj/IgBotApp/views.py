@@ -9,7 +9,7 @@ def PanelView(request):
 
 
 def requestStoreCredentials(request):
-    WebDriverManager.WebdriverActions.StoreLoginCredentials()
+    WebDriverManager.WebdriverActions.StoreLoginCredentials(request.GET.get("username"), request.GET.get("password"))
     return HttpResponse("Stored credentials")
 
 
