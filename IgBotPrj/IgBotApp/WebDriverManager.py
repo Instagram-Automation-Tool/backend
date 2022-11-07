@@ -24,8 +24,11 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 import pickle
 
+# todo: add identifiers to paramaters ex: def FUNC(input: String)
+
 
 class WebdriverActions:
+    # todo: implement detection if password is incorrect
     def StoreLoginCredentials(username, password):
         driver = WebdriverActions.GetWebDriver()
         # driver.set_window_size(500, 695)
@@ -59,27 +62,23 @@ class WebdriverActions:
             "\nLogin to your Instagram account.\nAfter 20 seconds, your credentials will be stored for later automatic logins.\n\n"
         )
         time.sleep(20)
-        # replace mock data with real acount data
-        bruh = InstagramAccount(
-            expandiId=3,
-            username="test3123",
-            password=password,
-            cookies=driver.get_cookies(),
-            proxy="1.1.1.1:1234",
+
+        WebdriverActions.CreateAccount(
+            driver, 69, username, password, driver.get_cookies(), "1231:1232"
         )
-        bruh.save()
-        WebdriverActions.SaveCookies(driver)
         print("\nCredentials saved.\n\n")
 
-    def LoadSession():
+    def LoadSession(username):
         driver = WebdriverActions.GetWebDriver()
         driver.get("https://www.instagram.com/")
-        driver.find_element(By.XPATH, "/html/body/div[4]/div/div/button[1]").click()
 
-        WebdriverActions.LoadCookies(driver)
+        WebdriverActions.LoadCookies(
+            driver,
+            username,
+        )
         print("\nLoaded session.\n\n")
 
-    def FollowProfile(link):
+    def FollowProfile(link, username):
         driver = WebdriverActions.GetWebDriver()
         driver.get(link)
 
@@ -88,7 +87,7 @@ class WebdriverActions:
             By.XPATH,
             "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[1]",
         ).click()
-        WebdriverActions.LoadCookies(driver)
+        WebdriverActions.LoadCookies(driver, username)
         WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
@@ -97,11 +96,11 @@ class WebdriverActions:
 
         print("\nFollowed " + link.split("/")[3] + "\n\n")
 
-    def LikePost(link):
+    def LikePost(link, username):
         driver = WebdriverActions.GetWebDriver()
         driver.get(urllib.parse.unquote(link))
 
-        WebdriverActions.LoadCookies(driver)
+        WebdriverActions.LoadCookies(driver, username)
         WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
@@ -109,10 +108,10 @@ class WebdriverActions:
         ).click()
         print("\nLiked post.\n\n")
 
-    def CommentOnPost(link, comment):
+    def CommentOnPost(link, comment, username):
         driver = WebdriverActions.GetWebDriver()
         driver.get(link)
-        WebdriverActions.LoadCookies(driver)
+        WebdriverActions.LoadCookies(driver, username)
 
         webElement = WebdriverActions.WaitForElement(
             driver,
@@ -169,16 +168,22 @@ class WebdriverActions:
         )
         return element
 
-    def SaveCookies(driver):
-        dict = driver.get_cookies()
-        with open("saved_dictionary.pkl", "wb") as f:
-            pickle.dump(dict, f)
+    def CreateAccount(driver, expandiId, username, password, cookies, proxy):
+        account = InstagramAccount(
+            expandiId=69,
+            username=username,
+            password=password,
+            cookies=driver.get_cookies(),
+            proxy="1.1.1.1:1234",
+        )
+        print("New account! ExpandiId:", expandiId)
+        account.save()
 
-    def LoadCookies(driver):
-        with open("saved_dictionary.pkl", "rb") as f:
-            loaded_dict = pickle.load(f)
-
-        for cookie in loaded_dict:
+    def LoadCookies(driver, username):
+        cookies = (
+            InstagramAccount.objects.all().values("cookies").get(username=username)
+        )
+        for cookie in cookies["cookies"]:
             driver.add_cookie(
                 {
                     "name": cookie["name"],
