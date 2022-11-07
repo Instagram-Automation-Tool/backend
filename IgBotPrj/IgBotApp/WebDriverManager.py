@@ -35,14 +35,56 @@ class WebdriverActions:
         driver.get("https://www.instagram.com/")
         # driver.find_element(By.XPATH, "/html/body/div[4]/div/div/button[1]").click()
 
-        try:
-            WebdriverActions.WaitForElement(
-                driver,
-                By.XPATH,
-                "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[1]",
-            ).click()
-        except:
-            print("NO COOKIES")
+        webEl = WebdriverActions.WaitForElement(
+            driver,
+            By.CLASS_NAME,
+            "_abdc",
+        )
+
+        xpathString = driver.execute_script(
+            """
+        
+       var el = arguments[0];
+function createXPathFromElement(elm) { 
+    var allNodes = document.getElementsByTagName('*'); 
+    for (var segs = []; elm && elm.nodeType == 1; elm = elm.parentNode) 
+    { 
+        if (elm.hasAttribute('id')) { 
+                var uniqueIdCount = 0; 
+                for (var n=0;n < allNodes.length;n++) { 
+                    if (allNodes[n].hasAttribute('id') && allNodes[n].id == elm.id) uniqueIdCount++; 
+                    if (uniqueIdCount > 1) break; 
+                }; 
+                if ( uniqueIdCount == 1) { 
+                    segs.unshift('id("' + elm.getAttribute('id') + '")'); 
+                    return segs.join('/'); 
+                } else { 
+                    segs.unshift(elm.localName.toLowerCase() + '[@id="' + elm.getAttribute('id') + '"]'); 
+                } 
+        } else if (elm.hasAttribute('class')) { 
+            segs.unshift(elm.localName.toLowerCase() + '[@class="' + elm.getAttribute('class') + '"]'); 
+        } else { 
+            for (i = 1, sib = elm.previousSibling; sib; sib = sib.previousSibling) { 
+                if (sib.localName == elm.localName)  i++; }; 
+                segs.unshift(elm.localName.toLowerCase() + '[' + i + ']'); 
+        }; 
+    }; 
+    return segs.length ? '/' + segs.join('/') : null; 
+}; 
+return createXPathFromElement(el)
+        """,
+            webEl,
+        )
+        print(xpathString)
+        WebdriverActions.WaitForElement(
+            driver,
+            By.XPATH,
+            xpathString + "/button[1]",
+        ).click()
+
+        print(xpathString)
+
+        print("\n\n\nf\n\n\n\n")
 
         username_input = WebdriverActions.WaitForElement(
             driver, By.XPATH, "//*[@id='loginForm']/div/div[1]/div/label/input"
