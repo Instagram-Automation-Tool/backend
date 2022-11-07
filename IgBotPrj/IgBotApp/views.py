@@ -4,7 +4,7 @@ from django.template import loader
 from . import WebDriverManager
 from IgBotApp.models import InstagramAccount
 
-
+# todo: improve request responses and actually process inputs
 def requestStoreCredentials(request):
     WebDriverManager.WebdriverActions.StoreLoginCredentials(
         request.GET.get("username"), request.GET.get("password")
