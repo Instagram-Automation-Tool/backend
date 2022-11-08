@@ -35,14 +35,13 @@ class WebdriverActions:
         driver.get("https://www.instagram.com/")
         # driver.find_element(By.XPATH, "/html/body/div[4]/div/div/button[1]").click()
 
-        try:
-            WebdriverActions.WaitForElement(
-                driver,
-                By.XPATH,
-                "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[1]",
-            ).click()
-        except:
-            print("NO COOKIES")
+        WebdriverActions.WaitForElement(
+            driver,
+            By.XPATH,
+            "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[1]",
+        ).click()
+
+        print("\n\n\nf\n\n\n\n")
 
         username_input = WebdriverActions.WaitForElement(
             driver, By.XPATH, "//*[@id='loginForm']/div/div[1]/div/label/input"
