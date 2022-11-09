@@ -60,5 +60,18 @@
         {% endfor %}
       </div>
     </form>
+
+    <form class="form-group" action="/scrapefollowers" method="get">
+      <label>Scrape profile followers</label>
+      <input id="link" type="text" name="link" value="https://www.instagram.com/robfranzese/" />
+      <label>Amount</label>
+      <input id="amount" type="number" name="amount" value="12" />
+      <div class="profiles-display">
+        {% for account in accounts %}
+        <button type="submit" id="username" name="username" value={{account.username}}
+          class="btn">{{account.username}}</button>
+        {% endfor %}
+      </div>
+    </form>
   </div>
 </div>
