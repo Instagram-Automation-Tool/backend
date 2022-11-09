@@ -19,4 +19,5 @@ urlpatterns = [
     ),
     path("like", views.requestLikePost),
     path("comment", views.requestCommentOnPost),
+    path("scrapefollowers", views.requestScrapeFollowers),
 ]
