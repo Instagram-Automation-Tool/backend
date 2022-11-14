@@ -40,6 +40,15 @@ def requestCommentOnPost(request):
     return HttpResponse("Commented")
 
 
+def requestScrapeFollowers(request):
+    
+    return HttpResponse( WebDriverManager.WebdriverActions.ScrapeFollowers(
+        request.GET.get("link"),
+        request.GET.get("amount"),
+        request.GET.get("username"),
+    ))
+
+
 # region showcase panel
 def PanelView(request):
     accounts = InstagramAccount.objects.all().values()

@@ -1,4 +1,6 @@
 from lib2to3.pgen2 import driver
+from lib2to3.pgen2.token import NEWLINE
+from msilib.schema import Environment
 import os
 
 from IgBotApp.models import InstagramAccount
@@ -20,9 +22,14 @@ from selenium.common.exceptions import (
     StaleElementReferenceException,
 )
 import urllib.parse
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import pickle
+import json
+import re
+from re import search
+import requests
 
 # todo: add identifiers to paramaters ex: def FUNC(input: String)
 
@@ -128,11 +135,89 @@ class WebdriverActions:
 
         print("\nCommented on post.\n\n")
 
+    def ScrapeFollowers(link, amount, username):
+        driver = WebdriverActions.GetWebDriver()
+        driver.get(urllib.parse.unquote(link))
+        driver.get("https://www.instagram.com/")
+
+        WebdriverActions.LoadCookies(
+            driver,
+            username,
+        )
+        driver.get("https://www.instagram.com/championsleague/followers/")
+
+        ids = []
+        appIds = []
+        for entry in driver.get_log("performance"):
+            if search("target_id=", entry["message"]):
+                id = re.findall(
+                    'target_id=(.*?)\\"',
+                    "".join(entry["message"]),
+                )
+                appId = re.findall(
+                    'X-IG-App-ID":"(.*?)"',
+                    "".join(entry["message"]),
+                )
+
+                if len(id) > 0:
+                    if id not in ids:
+                        ids.append(id)
+                if len(appId) > 0:
+                    if appId not in appIds:
+                        appIds.append(appId)
+
+        users = []
+
+        for appId in appIds:
+            for id in ids:
+                session = requests.Session()
+
+                cookies = (
+                    InstagramAccount.objects.all()
+                    .values("cookies")
+                    .get(username=username)
+                )
+
+                jar = requests.cookies.RequestsCookieJar()
+                for cookie in cookies["cookies"]:
+                    jar.set(
+                        cookie["name"],
+                        cookie["value"],
+                        domain=cookie["domain"],
+                        path=cookie["path"],
+                    )
+
+                session.cookies = jar
+
+                # look for next_max_id
+                # look for string that looks like current id
+
+                session.headers.update({"x-ig-app-id": appId[0]})
+                response = session.get(
+                    "https://www.instagram.com/api/v1/friendships/"
+                    + id[0]
+                    + "/followers/?count="
+                    + amount
+                    + "&search_surface=follow_list_page"
+                )
+                usersJson = response.json()["users"]
+                for user in usersJson:
+                    users.append(user["username"])
+                
+                return json.dumps(users)
+        print("\nScraped followers.\n\n")
+
     # helper functions
     def GetWebDriver():
         chrome_options = WebdriverActions.GetOptions()
+        caps = DesiredCapabilities.CHROME
+        # as per latest docs
+        caps["goog:loggingPrefs"] = {"performance": "ALL"}
+
         return webdriver.Chrome(
-            BASE_DIR + "/chromedriver.exe", chrome_options=chrome_options
+            BASE_DIR + "/chromedriver.exe",
+            desired_capabilities=caps,
+            chrome_options=chrome_options,
         )
 
     def GetOptions():
