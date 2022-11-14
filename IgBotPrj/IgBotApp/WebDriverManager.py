@@ -187,11 +187,16 @@ class WebdriverActions:
 
                 session.cookies = jar
 
+                # look for next_max_id
+                # look for string that looks like current id
+
                 session.headers.update({"x-ig-app-id": appId[0]})
                 response = session.get(
                     "https://www.instagram.com/api/v1/friendships/"
                     + id[0]
-                    + "/followers/?count=1000&search_surface=follow_list_page"
+                    + "/followers/?count="
+                    + amount
+                    + "&search_surface=follow_list_page"
                 )
                 print(response.text)
                 print(appId[0])
