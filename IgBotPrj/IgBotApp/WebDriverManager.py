@@ -1,4 +1,6 @@
 from lib2to3.pgen2 import driver
+from lib2to3.pgen2.token import NEWLINE
+from msilib.schema import Environment
 import os
 
 from IgBotApp.models import InstagramAccount
@@ -144,7 +146,6 @@ class WebdriverActions:
         )
         driver.get("https://www.instagram.com/championsleague/followers/")
 
-        time.sleep(5)
         ids = []
         appIds = []
         for entry in driver.get_log("performance"):
@@ -164,8 +165,9 @@ class WebdriverActions:
                 if len(appId) > 0:
                     if appId not in appIds:
                         appIds.append(appId)
-        print(ids)
-        print(appIds)
+
+        users = []
+
         for appId in appIds:
             for id in ids:
                 session = requests.Session()
@@ -198,9 +200,11 @@ class WebdriverActions:
                     + amount
                     + "&search_surface=follow_list_page"
                 )
-                print(response.text)
-                print(appId[0])
-                print(id[0])
+                usersJson = response.json()["users"]
+                for user in usersJson:
+                    users.append(user["username"])
+                
+                return json.dumps(users)
         print("\nScraped followers.\n\n")
 
     # helper functions
