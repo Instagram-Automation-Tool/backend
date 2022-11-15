@@ -19,21 +19,24 @@
     <form class="form-group" action="loadcredentials" method="get">
       <label>Load session</label>
       <div class="profiles-display">
+        {% if accounts %}
         {% for account in accounts %}
-
         <button type="submit" id="username" name="username" value={{account.username}}
           class="btn">{{account.username}}</button>
         {% endfor %}
+        {% endif %}
       </div>
     </form>
     <form class="form-group" action="/follow" method="get">
       <label>Follow profile</label>
       <input id="link" type="text" name="link" value="https://instagram.com/migos/" />
       <div class="profiles-display">
+        {% if accounts %}
         {% for account in accounts %}
         <button type="submit" id="username" name="username" value={{account.username}}
           class="btn">{{account.username}}</button>
         {% endfor %}
+        {% endif %}
       </div>
     </form>
 
@@ -41,10 +44,12 @@
       <label>Like post</label>
       <input id="link" type="text" name="link" value="https://www.instagram.com/p/ChslcDvvQqE" />
       <div class="profiles-display">
+        {% if accounts %}
         {% for account in accounts %}
         <button type="submit" id="username" name="username" value={{account.username}}
           class="btn">{{account.username}}</button>
         {% endfor %}
+        {% endif %}
       </div>
     </form>
 
@@ -54,10 +59,12 @@
       <label>Text</label>
       <input id="comment" type="text" name="comment" value="This is so cool!" />
       <div class="profiles-display">
+        {% if accounts %}
         {% for account in accounts %}
         <button type="submit" id="username" name="username" value={{account.username}}
           class="btn">{{account.username}}</button>
         {% endfor %}
+        {% endif %}
       </div>
     </form>
 
@@ -67,10 +74,12 @@
       <label>Amount</label>
       <input id="amount" type="number" name="amount" value="12" />
       <div class="profiles-display">
+        {% if accounts %}
         {% for account in accounts %}
         <button type="submit" id="username" name="username" value={{account.username}}
           class="btn">{{account.username}}</button>
         {% endfor %}
+        {% endif %}
       </div>
     </form>
   </div>

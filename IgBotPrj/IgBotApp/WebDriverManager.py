@@ -67,11 +67,63 @@ class WebdriverActions:
         print(
             "\nLogin to your Instagram account.\nAfter 20 seconds, your credentials will be stored for later automatic logins.\n\n"
         )
-        time.sleep(20)
+        time.sleep(5)
+
+        driver.get("https://instagram.com/" + username)
+
+        bio = WebdriverActions.WaitForElement(
+            driver,
+            By.XPATH,
+            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/section/div[3]/span",
+        ).text
+        followersCount = int(
+            WebdriverActions.WaitForElement(
+                driver,
+                By.XPATH,
+                "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/section/ul/li[2]/a/div/span",
+            ).text
+        )
+        followingCount = int(
+            WebdriverActions.WaitForElement(
+                driver,
+                By.XPATH,
+                "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/section/ul/li[3]/a/div/span",
+            ).text
+        )
+        postsCount = int(
+            WebdriverActions.WaitForElement(
+                driver,
+                By.XPATH,
+                "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/section/ul/li[1]/div/span",
+            ).text
+        )
+        profilePictureURL = WebdriverActions.WaitForElement(
+            driver,
+            By.XPATH,
+            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/div/div/div/button/img",
+        ).get_attribute("src")
+        followingCount = int(
+            WebdriverActions.WaitForElement(
+                driver,
+                By.XPATH,
+                "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/section/ul/li[3]/a/div/span",
+            ).text
+        )
 
         WebdriverActions.CreateAccount(
-            driver, 69, username, password, driver.get_cookies(), "1231:1232"
+            driver=driver,
+            expandiId=69,
+            username=username,
+            password=password,
+            cookies=driver.get_cookies(),
+            proxy="1231:1232",
+            followerCount=followersCount,
+            followingCount=followingCount,
+            profilePictureURL=profilePictureURL,
+            postsCount=postsCount,
+            bio=bio,
         )
+
         print("\nCredentials saved.\n\n")
 
     def LoadSession(username):
@@ -82,6 +134,10 @@ class WebdriverActions:
             driver,
             username,
         )
+
+        driver.get("https://instagram.com/" + username)
+        print()
+
         print("\nLoaded session.\n\n")
 
     def FollowProfile(link, username):
@@ -201,9 +257,10 @@ class WebdriverActions:
                     + "&search_surface=follow_list_page"
                 )
                 usersJson = response.json()["users"]
+                print(usersJson[0])
                 for user in usersJson:
                     users.append(user["username"])
-                
+
                 return json.dumps(users)
         print("\nScraped followers.\n\n")
 
@@ -252,13 +309,30 @@ class WebdriverActions:
         )
         return element
 
-    def CreateAccount(driver, expandiId, username, password, cookies, proxy):
+    def CreateAccount(
+        driver,
+        expandiId,
+        username,
+        password,
+        cookies,
+        proxy,
+        bio,
+        followerCount,
+        followingCount,
+        postsCount,
+        profilePictureURL,
+    ):
         account = InstagramAccount(
             expandiId=69,
             username=username,
             password=password,
-            cookies=driver.get_cookies(),
-            proxy="1.1.1.1:1234",
+            cookies=cookies,
+            proxy=proxy,
+            bio=bio,
+            followerCount=followerCount,
+            followingCount=followingCount,
+            postsCount=postsCount,
+            profilePictureURL=profilePictureURL,
         )
         print("New account! ExpandiId:", expandiId)
         account.save()
