@@ -3,6 +3,9 @@ from django.http import HttpResponse
 from django.template import loader
 from . import WebDriverManager
 from IgBotApp.models import InstagramAccount
+from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.response import Response
+from rest_framework import status
 
 # todo: improve request responses and actually process inputs
 def requestStoreCredentials(request):
@@ -60,3 +63,9 @@ def PanelView(request):
 
 
 # endregion
+
+# get all acounts 
+class AccountsRetrieveUpdateAPIView(RetrieveUpdateAPIView):
+    def retrieve(self, request):
+        accounts = InstagramAccount.objects.all().values()
+        return Response(accounts, status= status.HTTP_200_OK)
