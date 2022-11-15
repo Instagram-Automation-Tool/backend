@@ -41,17 +41,21 @@ def requestCommentOnPost(request):
 
 
 def requestScrapeFollowers(request):
-    
-    return HttpResponse( WebDriverManager.WebdriverActions.ScrapeFollowers(
-        request.GET.get("link"),
-        request.GET.get("amount"),
-        request.GET.get("username"),
-    ))
+
+    return HttpResponse(
+        WebDriverManager.WebdriverActions.ScrapeFollowers(
+            request.GET.get("link"),
+            request.GET.get("amount"),
+            request.GET.get("username"),
+        )
+    )
 
 
 # region showcase panel
 def PanelView(request):
     accounts = InstagramAccount.objects.all().values()
+    if accounts == None:
+        accounts = []
     return render(request, "panel/panel.html", {"accounts": accounts})
 
 
