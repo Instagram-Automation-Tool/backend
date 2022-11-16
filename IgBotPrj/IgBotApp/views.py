@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.template import loader
 from . import WebDriverManager
 from IgBotApp.models import InstagramAccount
@@ -42,9 +42,22 @@ def requestCommentOnPost(request):
     )
     return HttpResponse("Commented")
 
+def requestCommentOnProfilePosts(request):
+    comments = []
+    comment=request.GET.get("comment")
+    count=int(request.GET.get("count"))
+    while(count>0):
+        comments.append(comment)
+        count=count-1
+    return HttpResponse(
+        WebDriverManager.WebdriverActions.CommentOnProfilePosts(
+            request.GET.get("targetUsername"),
+            comments,
+            request.GET.get("username")
+        )
+    )
 
 def requestScrapeFollowers(request):
-
     return HttpResponse(
         WebDriverManager.WebdriverActions.ScrapeFollowers(
             request.GET.get("link"),
