@@ -3,6 +3,8 @@ from lib2to3.pgen2.token import NEWLINE
 # from msilib.schema import Environment
 import os
 
+from pytz import common_timezones_set
+
 from IgBotApp.models import InstagramAccount
 
 
@@ -169,78 +171,45 @@ class WebdriverActions:
 
     def CommentOnPost(link, comment, username):
         driver = WebdriverActions.GetWebDriver()
-        driver.get('https://instagram.com/'+link)
+        driver.get(link)
         WebdriverActions.LoadCookies(driver, username)
 
-        # First Post
-        try:
-            webElement = WebdriverActions.WaitForElement(
-                driver,
-                By.XPATH,
-                "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/div[2]/article/div[1]/div/div[1]/div[1]/a"
-            )
-            webElement.click()
-        except:
-            webElement = WebdriverActions.WaitForElement(
-                driver,
-                By.XPATH,
-                "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/div[2]/article/div[1]/div/div[1]/div[1]/a"
-            )
-            webElement.click()
-        else: 
-            driver.quit()
-
-
-        # Click Comment Area
         webElement = WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
-            "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea"
+            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div[1]/div[1]/article/div/div[2]/div/div[2]/section[3]/div/form/textarea",
         )
         webElement.click()
-
-        # Send Comment
         webElement = WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
-            "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea"
+            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div[1]/div[1]/article/div/div[2]/div/div[2]/section[3]/div/form/textarea",
         )
+
         webElement.send_keys(comment + Keys.ENTER)
 
-
-        time.sleep(2)
-
-        webElement = WebdriverActions.WaitForElement(driver,
-            By.XPATH,
-            "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[1]/div/div/div/button"
-        )
-        webElement.click()
-        for x in range(0, 5):
-            
-            webElement = WebdriverActions.WaitForElement(driver,
-                By.XPATH,
-                "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea"
-                ).click()
-            webElement.click()
-
-            webElement = WebdriverActions.WaitForElement(driver,
-                By.XPATH,
-                "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea"
-                )
-            webElement.send_keys(comment + Keys.ENTER)
-
-            webElement = WebdriverActions.WaitForElement(driver,
-                By.XPATH,
-                "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[1]/div/div/div[2]/button",
-                )
-            webElement.click()
-            
-            
-            
-
-
-
         print("\nCommented on post.\n\n")
+
+    def CommentOnProfilePosts(targetUsername, comments, username):
+        driver = WebdriverActions.GetWebDriver()
+        driver.get('https://instagram.com/'+targetUsername)
+        WebdriverActions.LoadCookies(driver, username)
+        print(comments)
+        # First Post
+            
+        WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/div[2]/article/div[1]/div/div[1]/div[1]/a/div").click()
+        if(len(comments)>0):
+            WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea").click()
+            WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea").send_keys(comments[0] + Keys.RETURN)
+            WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[1]/div/div/div/button").click()
+        
+        if(len(comments)>1):
+            for comment in comments:
+                WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea").click()
+                WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea").send_keys(comment + Keys.RETURN)
+                WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[1]/div/div/div[2]/button").click()
+
+        return comments       
 
     def ScrapeFollowers(link, amount, username):
         driver = WebdriverActions.GetWebDriver()

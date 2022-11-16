@@ -68,6 +68,23 @@
       </div>
     </form>
 
+    <form class="form-group" action="/commentOnProfilePosts" method="get">
+      <label>Comment on profile's posts</label>
+      <input id="targetUsername" type="text" name="targetUsername" value="migos" />
+      <label>Text</label>
+      <input id="comment" type="text" name="comment" value="This is so cool!" />
+      <label>Count</label>
+      <input id="count" type="number" name="count" value="3" />
+      <div class="profiles-display">
+        {% if accounts %}
+        {% for account in accounts %}
+        <button type="submit" id="username" name="username" value={{account.username}}
+          class="btn">{{account.username}}</button>
+        {% endfor %}
+        {% endif %}
+      </div>
+    </form>
+
     <form class="form-group" action="/scrapefollowers" method="get">
       <label>Scrape profile followers</label>
       <input id="link" type="text" name="link" value="https://www.instagram.com/robfranzese/" />
