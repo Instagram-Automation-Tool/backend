@@ -40,37 +40,24 @@ class WebdriverActions:
     # todo: implement detection if password is incorrect
     def StoreLoginCredentials(username, password):
         driver = WebdriverActions.GetWebDriver()
-        # driver.set_window_size(500, 695)
         driver.get("https://www.instagram.com/")
-        # driver.find_element(By.XPATH, "/html/body/div[4]/div/div/button[1]").click()
 
         WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
-            "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[1]",
+            "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div[3]/div[1]/div/button",
         ).click()
 
-        print("\n\n\nf\n\n\n\n")
-
-        username_input = WebdriverActions.WaitForElement(
-            driver, By.XPATH, "//*[@id='loginForm']/div/div[1]/div/label/input"
-        )
-        password_input = WebdriverActions.WaitForElement(
-            driver, By.XPATH, "//*[@id='loginForm']/div/div[2]/div/label/input"
-        )
-
-        username_input.send_keys(username)
-        password_input.send_keys(password)
+        WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div/div/div[2]/div[3]/button[1]").click()
 
         WebdriverActions.WaitForElement(
-            driver, By.XPATH, "//button[@type='submit']"
-        ).click()
+            driver, By.XPATH, "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div/div/div[2]/form/div[1]/div[3]/div/label/input"
+        ).send_keys(username)
+        password_input = WebdriverActions.WaitForElement(
+            driver, By.XPATH, "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div/div/div[2]/form/div[1]/div[4]/div/label/input"
+        ).send_keys(password + Keys.RETURN)
 
-        print(
-            "\nLogin to your Instagram account.\nAfter 20 seconds, your credentials will be stored for later automatic logins.\n\n"
-        )
-        time.sleep(5)
-
+        time.sleep(3)
         driver.get("https://instagram.com/" + username)
 
         bio = WebdriverActions.WaitForElement(
@@ -102,7 +89,7 @@ class WebdriverActions:
         profilePictureURL = WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
-            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/div/div/div/button/img",
+            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/div/div/span/img",
         ).get_attribute("src")
 
         WebdriverActions.CreateAccount(
@@ -120,7 +107,7 @@ class WebdriverActions:
         )
 
         print("\nCredentials saved.\n\n")
-        driver.quit()
+
 
     def LoadSession(username):
         driver = WebdriverActions.GetWebDriver()
@@ -140,20 +127,13 @@ class WebdriverActions:
         driver = WebdriverActions.GetWebDriver()
         driver.get(link)
 
-        WebdriverActions.WaitForElement(
-            driver,
-            By.XPATH,
-            "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[1]",
-        ).click()
         WebdriverActions.LoadCookies(driver, username)
         WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
-            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/section/div[1]/div[2]/div/div[2]/button"
+            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[2]/button/div"
         ).click()
 
-        time.sleep(5)
-        driver.quit()
 
         print("\nFollowed " + link.split("/")[3] + "\n\n")
 
