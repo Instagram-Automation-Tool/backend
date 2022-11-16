@@ -59,7 +59,7 @@ class WebdriverActions:
         ).send_keys(username)
         WebdriverActions.WaitForElement(
             driver, By.XPATH, "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div[2]/div[1]/div[2]/form/div/div[2]/div/label/input"
-        ).send_keys(password + Keys.RETURN)
+        ).send_keys(password)
         WebdriverActions.WaitForElement(
             driver, By.XPATH, "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div[2]/div[1]/div[2]/form/div/div[3]/button"
         ).click()
