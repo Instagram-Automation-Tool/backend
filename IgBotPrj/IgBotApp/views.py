@@ -46,7 +46,6 @@ def requestCommentOnProfilePosts(request):
     comments = []
     comment=request.GET.get("comment")
     count=int(request.GET.get("count"))
-    print(request.GET.get("like"))
     while(count>0):
         comments.append(comment)
         count=count-1
@@ -54,7 +53,7 @@ def requestCommentOnProfilePosts(request):
         WebDriverManager.WebdriverActions.CommentOnProfilePosts(
             request.GET.get("targetUsername"),
             comments,
-            request.GET.get("like"),
+            request.GET.get("like")=="on",
             request.GET.get("username")
         )
     )

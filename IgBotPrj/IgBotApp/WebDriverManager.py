@@ -40,37 +40,24 @@ class WebdriverActions:
     # todo: implement detection if password is incorrect
     def StoreLoginCredentials(username, password):
         driver = WebdriverActions.GetWebDriver()
-        # driver.set_window_size(500, 695)
         driver.get("https://www.instagram.com/")
-        # driver.find_element(By.XPATH, "/html/body/div[4]/div/div/button[1]").click()
 
         WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
-            "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[1]",
+            "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div[3]/div[1]/div/button",
         ).click()
 
-        print("\n\n\nf\n\n\n\n")
-
-        username_input = WebdriverActions.WaitForElement(
-            driver, By.XPATH, "//*[@id='loginForm']/div/div[1]/div/label/input"
-        )
-        password_input = WebdriverActions.WaitForElement(
-            driver, By.XPATH, "//*[@id='loginForm']/div/div[2]/div/label/input"
-        )
-
-        username_input.send_keys(username)
-        password_input.send_keys(password)
+        WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div/div/div[2]/div[3]/button[1]").click()
 
         WebdriverActions.WaitForElement(
-            driver, By.XPATH, "//button[@type='submit']"
-        ).click()
+            driver, By.XPATH, "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div/div/div[2]/form/div[1]/div[3]/div/label/input"
+        ).send_keys(username)
+        password_input = WebdriverActions.WaitForElement(
+            driver, By.XPATH, "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div/div/div[2]/form/div[1]/div[4]/div/label/input"
+        ).send_keys(password + Keys.RETURN)
 
-        print(
-            "\nLogin to your Instagram account.\nAfter 20 seconds, your credentials will be stored for later automatic logins.\n\n"
-        )
-        time.sleep(5)
-
+        time.sleep(3)
         driver.get("https://instagram.com/" + username)
 
         bio = WebdriverActions.WaitForElement(
@@ -102,7 +89,7 @@ class WebdriverActions:
         profilePictureURL = WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
-            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/div/div/div/button/img",
+            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/div/div/span/img",
         ).get_attribute("src")
 
         WebdriverActions.CreateAccount(
@@ -120,7 +107,7 @@ class WebdriverActions:
         )
 
         print("\nCredentials saved.\n\n")
-        driver.quit()
+
 
     def LoadSession(username):
         driver = WebdriverActions.GetWebDriver()
@@ -140,20 +127,13 @@ class WebdriverActions:
         driver = WebdriverActions.GetWebDriver()
         driver.get(link)
 
-        WebdriverActions.WaitForElement(
-            driver,
-            By.XPATH,
-            "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[1]",
-        ).click()
         WebdriverActions.LoadCookies(driver, username)
         WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
-            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/section/div[1]/div[2]/div/div[2]/button"
+            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[2]/button/div"
         ).click()
 
-        time.sleep(5)
-        driver.quit()
 
         print("\nFollowed " + link.split("/")[3] + "\n\n")
 
@@ -190,21 +170,17 @@ class WebdriverActions:
 
         print("\nCommented on post.\n\n")
 
-    def CommentOnProfilePosts(targetUsername, comments, username):
+    def CommentOnProfilePosts(targetUsername, comments, like, username):
         driver = WebdriverActions.GetWebDriver()
         driver.get('https://instagram.com/'+targetUsername)
         WebdriverActions.LoadCookies(driver, username)
-        print(comments)
         # First Post
-            
         WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/div[2]/article/div[1]/div/div[1]/div[1]/a/div").click()
+
         if(len(comments)>0):
-            WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea").click()
-            WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea").send_keys(comments[0] + Keys.RETURN)
-            WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[1]/div/div/div/button").click()
-        
-        if(len(comments)>1):
             for comment in comments:
+                if(like):
+                    WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[1]/span[1]/button").click()
                 WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea").click()
                 WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea").send_keys(comment + Keys.RETURN)
                 WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[1]/div/div/div[2]/button").click()
@@ -307,6 +283,7 @@ class WebdriverActions:
             chromeOptions.add_argument("--proxy-server=%s" % "hostname" + ":" + "port")
         if dev_options.KeepWindowOpenOnFinish == True:
             chromeOptions.add_experimental_option("detach", True)
+        chromeOptions.add_argument("--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.11")
         return chromeOptions
 
     def WaitForElement(driver, by, value):
