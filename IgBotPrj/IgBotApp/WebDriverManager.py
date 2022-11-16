@@ -11,6 +11,10 @@ from IgBotApp.models import InstagramAccount
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.environ["PATH"] += os.pathsep + os.path.join(BASE_DIR, "/gecko")
 
+# index 0 = desktop
+# index 1 = mobile
+USER_AGENTS=["--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36", "--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.11"]
+
 from . import dev_options
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -35,62 +39,104 @@ import requests
 
 # todo: add identifiers to paramaters ex: def FUNC(input: String)
 
+#todo: implement function: WaitForOption(), waits for multiple xpath possibilities
 
 class WebdriverActions:
     # todo: implement detection if password is incorrect
     def StoreLoginCredentials(username, password):
-        driver = WebdriverActions.GetWebDriver()
-        driver.get("https://www.instagram.com/")
+        driver = WebdriverActions.GetWebDriver(USER_AGENTS[0])
+        driver.get("https://www.instagram.com/")    
+
 
         WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
-            "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div[3]/div[1]/div/button",
+            "/html/body/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[1]",
         ).click()
 
-        WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div/div/div[2]/div[3]/button[1]").click()
-
         WebdriverActions.WaitForElement(
-            driver, By.XPATH, "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div/div/div[2]/form/div[1]/div[3]/div/label/input"
+            driver, By.XPATH, "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div[2]/div[1]/div[2]/form/div/div[1]/div/label/input"
         ).send_keys(username)
-        password_input = WebdriverActions.WaitForElement(
-            driver, By.XPATH, "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div/div/div[2]/form/div[1]/div[4]/div/label/input"
+        WebdriverActions.WaitForElement(
+            driver, By.XPATH, "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div[2]/div[1]/div[2]/form/div/div[2]/div/label/input"
         ).send_keys(password + Keys.RETURN)
+        WebdriverActions.WaitForElement(
+            driver, By.XPATH, "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div[2]/div[1]/div[2]/form/div/div[3]/button"
+        ).click()
 
-        time.sleep(3)
+
+        time.sleep(10)
+
         driver.get("https://instagram.com/" + username)
 
-        bio = WebdriverActions.WaitForElement(
-            driver,
-            By.XPATH,
-            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[3]/div",
-        ).text
-        followersCount = int(
+
+        bio, followersCount, followingCount, postsCount, profilePictureURL = ["error","error","error","error","error"]
+
+        try:
+            bio = WebdriverActions.WaitForElement(
+                driver,
+                By.XPATH,
+                "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[3]/div",
+            ).text
+            followersCount = int(
             WebdriverActions.WaitForElement(
                 driver,
                 By.XPATH,
                 "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/ul/li[2]/a/div/span",
             ).text
-        )
-        followingCount = int(
+            )
+            followingCount = int(
             WebdriverActions.WaitForElement(
                 driver,
                 By.XPATH,
                 "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/ul/li[3]/a/div/span"
             ).text
-        )
-        postsCount = int(
+            )
+            postsCount = int(
             WebdriverActions.WaitForElement(
                 driver,
                 By.XPATH,
                 "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/ul/li[1]/div/span",
             ).text
-        )
-        profilePictureURL = WebdriverActions.WaitForElement(
-            driver,
-            By.XPATH,
-            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/div/div/span/img",
-        ).get_attribute("src")
+            )
+            profilePictureURL = WebdriverActions.WaitForElement(
+                driver,
+                By.XPATH,
+                "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/div/div/span/img",
+            ).get_attribute("src")
+        except:
+            bio = WebdriverActions.WaitForElement(
+                driver,
+                By.XPATH,
+                "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/section/div[3]/span",
+            ).text
+            followersCount = int(
+            WebdriverActions.WaitForElement(
+                driver,
+                By.XPATH,
+                "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/section/ul/li[2]/a/div/span",
+            ).text
+            )
+            followingCount = int(
+            WebdriverActions.WaitForElement(
+                driver,
+                By.XPATH,
+                "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/section/ul/li[3]/a/div/span"
+            ).text
+            )
+            postsCount = int(
+            WebdriverActions.WaitForElement(
+                driver,
+                By.XPATH,
+                "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/section/ul/li[1]/div/span",
+            ).text
+            )
+            profilePictureURL = WebdriverActions.WaitForElement(
+                driver,
+                By.XPATH,
+                "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/div/div/span/img",
+            ).get_attribute("src")
+
 
         WebdriverActions.CreateAccount(
             driver=driver,
@@ -110,7 +156,7 @@ class WebdriverActions:
 
 
     def LoadSession(username):
-        driver = WebdriverActions.GetWebDriver()
+        driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get("https://www.instagram.com/")
 
         WebdriverActions.LoadCookies(
@@ -124,21 +170,21 @@ class WebdriverActions:
         print("\nLoaded session.\n\n")
 
     def FollowProfile(link, username):
-        driver = WebdriverActions.GetWebDriver()
+        driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get(link)
 
         WebdriverActions.LoadCookies(driver, username)
         WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
-            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[2]/button/div"
+            "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[1]/button"
         ).click()
 
 
         print("\nFollowed " + link.split("/")[3] + "\n\n")
 
     def LikePost(link, username):
-        driver = WebdriverActions.GetWebDriver()
+        driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get(urllib.parse.unquote(link))
 
         WebdriverActions.LoadCookies(driver, username)
@@ -150,7 +196,7 @@ class WebdriverActions:
         print("\nLiked post.\n\n")
 
     def CommentOnPost(link, comment, username):
-        driver = WebdriverActions.GetWebDriver()
+        driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get(link)
         WebdriverActions.LoadCookies(driver, username)
 
@@ -171,7 +217,7 @@ class WebdriverActions:
         print("\nCommented on post.\n\n")
 
     def CommentOnProfilePosts(targetUsername, comments, like, username):
-        driver = WebdriverActions.GetWebDriver()
+        driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get('https://instagram.com/'+targetUsername)
         WebdriverActions.LoadCookies(driver, username)
         # First Post
@@ -196,7 +242,7 @@ class WebdriverActions:
         return comments       
 
     def ScrapeFollowers(link, amount, username):
-        driver = WebdriverActions.GetWebDriver()
+        driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get(urllib.parse.unquote(link))
         driver.get("https://www.instagram.com/")
 
@@ -270,34 +316,32 @@ class WebdriverActions:
         print("\nScraped followers.\n\n")
 
     # helper functions
-    def GetWebDriver():
-        chrome_options = WebdriverActions.GetOptions()
-        chrome_options.add_argument("--window-size=1020,1020")
+    def GetWebDriver(userAgent):
+        chromeOptions = WebdriverActions.GetOptions(userAgent)
         caps = DesiredCapabilities.CHROME
-        # as per latest docs
         caps["goog:loggingPrefs"] = {"performance": "ALL"}
-
         return webdriver.Chrome(
             BASE_DIR + "/chromedriver.exe",
             desired_capabilities=caps,
-            chrome_options=chrome_options,
+            chrome_options=chromeOptions,
         )
 
-    def GetOptions():
+    def GetOptions(userAgent):
         chromeOptions = Options()
+        chromeOptions.add_argument("--window-size=1020,1020")
         if dev_options.Headless:
             chromeOptions.add_argument("--headless")
         if dev_options.Proxyless != True:
             chromeOptions.add_argument("--proxy-server=%s" % "hostname" + ":" + "port")
         if dev_options.KeepWindowOpenOnFinish == True:
             chromeOptions.add_experimental_option("detach", True)
-        chromeOptions.add_argument("--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.11")
+        chromeOptions.add_argument(userAgent)
         return chromeOptions
 
     def WaitForElement(driver, by, value):
         wait = WebDriverWait(
             driver,
-            timeout=20,
+            timeout=10,
             poll_frequency=1,
             ignored_exceptions=[
                 ElementNotVisibleException,
