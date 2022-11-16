@@ -220,7 +220,7 @@ class WebdriverActions:
             driver,
             username,
         )
-        driver.get("https://www.instagram.com/"+username+"/followers/")
+        driver.get(link+"followers/")
 
         ids = []
         appIds = []
