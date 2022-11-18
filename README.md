@@ -3,13 +3,13 @@
 
 ## Windows installation
 ### .bat files
-1. [Install Python](https://www.python.org/downloads/)
+1. [Install Python](https://www.python.org/downloads/). Make sure to tick the `Add Python to enviroment variables` box. If you didn't do it on install, you can rerun the installer, hit `Modify`, then tick the option.
 2. Clone repository
 3. Run ```setup.bat``` to create the Django virtual enviroment and install all dependencies
 4. Run ```start.bat``` to start the server
 
 ### Manual setup trough and execution trough Command Prompt
-1. [Install Python](https://www.python.org/downloads/)
+1. [Install Python](https://www.python.org/downloads/). Make sure to tick the `Add Python to enviroment variables` box. If you didn't do it on install, you can rerun the installer, hit `Modify`, then tick the option.
 2. Clone repository
 3. Open Command Prompt
 4. CD to desired directory
