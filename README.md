@@ -1,5 +1,5 @@
 # Requirements
-[Install Python](https://www.python.org/downloads/), then we will setup the [Python Django](https://www.djangoproject.com/) enviroment as instructed below.
+[Install Python](https://www.python.org/downloads/), then we will setup the [Python Django](https://www.djangoproject.com/) virtual enviroment as instructed below.
 
 ## Windows installation
 ### .bat files
