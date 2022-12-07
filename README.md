@@ -1,26 +1,36 @@
-# Setup
-[Install Python](https://www.python.org/downloads/), then we will setup the [Python Django](https://www.djangoproject.com/) enviroment as instructed below. Django has [Selenium](https://www.selenium.dev/) integrated.
+# Requirements
+[Install Python](https://www.python.org/downloads/). Make sure to tick the `Add Python to enviroment variables` box. If you didn't do it on install, you can rerun the installer, hit `Modify`, then tick the option. 
 
-## Windows
-1. Open powershell, CD to the directory where you want the enviroment to be created
-```CD ".../IG Backend"```
+![image](https://user-images.githubusercontent.com/35419029/202734746-7ab53320-a430-4984-a3d2-fe5000d5f577.png)
 
-2. Create the virtual enviroment required to run Python Django
+Next, we will setup the [Python Django](https://www.djangoproject.com/) virtual enviroment as instructed below.
+## Windows installation
+### .bat files
+1. Clone repository
+2. Run ```setup.bat``` to create the Django virtual enviroment and install all dependencies
+3. Run ```start.bat``` to start the server
+
+### Manual setup and execution trough Command Prompt
+1. Clone repository
+2. Open Command Prompt
+3. CD to desired directory
+```cd C:/{your path}```
+4. Install the virtualenv package
+```pip install virtualenv```
+5. Create a virtualenv named IgBotEnv
 ```py -m venv IgBotEnv```
-
-3. Activate the virtual enviroment so we can install Django trough [Pip](https://pip.pypa.io/en/stable/)
-```IgBotEnv/Scripts/Activate.ps1```
-
-If the enviroment was succesfully activated you should see this at the beginning of the line: ![Image alright](https://i.imgur.com/HVYNVTV.png)
-
-4. Install Django
-```pip install Django```
-
-
-
-# Dependenices
-pip install djangorestframework
-
-pip install django-cors-headers
-
-pip install djangorestframework-simplejwt
+6. CD to the Scripts folder
+```cd "IgBotEnv/Scripts"```
+7. Activate the virtual enviroment to install required packages
+```call activate.bat``` .
+When the enviroment is active, (IgBotEnv) will be displayed as seen below
+![image](https://user-images.githubusercontent.com/35419029/202736289-2f3a7666-10df-400f-b3c1-086bb798bfb5.png)
+8. Install dependencies
+```pip install django django-cors-headers psycopg2 selenium requests djangorestframework-simplejwt```
+9. CD to the Project's folder
+```cd "../../IgBotPrj"```
+10. Create local migrations
+```python manage.py makemigrations```
+```python manage.py migrate --fake```
+11. Start the server
+```python manage.py runserver```
