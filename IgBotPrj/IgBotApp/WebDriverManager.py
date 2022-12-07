@@ -17,6 +17,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 from . import dev_options
 from lib2to3.pgen2 import driver
 from lib2to3.pgen2.token import NEWLINE
@@ -374,7 +375,7 @@ class WebdriverActions:
         caps = DesiredCapabilities.CHROME
         caps["goog:loggingPrefs"] = {"performance": "ALL"}
         return webdriver.Chrome(
-            BASE_DIR + WebdriverActions.DetectOS(),
+            ChromeDriverManager().install(),
             desired_capabilities=caps,
             chrome_options=chromeOptions,
         )

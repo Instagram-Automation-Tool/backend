@@ -26,7 +26,7 @@ Next, we will setup the [Python Django](https://www.djangoproject.com/) virtual 
 When the enviroment is active, (IgBotEnv) will be displayed as seen below
 ![image](https://user-images.githubusercontent.com/35419029/202736289-2f3a7666-10df-400f-b3c1-086bb798bfb5.png)
 8. Install dependencies
-```pip install django django-cors-headers psycopg2 selenium requests djangorestframework-simplejwt```
+```pip install django django-cors-headers psycopg2 selenium requests djangorestframework-simplejwt webdriver-manager```
 9. CD to the Project's folder
 ```cd "../../IgBotPrj"```
 10. Create local migrations
