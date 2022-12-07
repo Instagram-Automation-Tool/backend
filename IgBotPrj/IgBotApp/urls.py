@@ -24,5 +24,5 @@ urlpatterns = [
     path("commentOnProfilePosts", views.requestCommentOnProfilePosts),
     path("scrapefollowers", views.requestScrapeFollowers),
     path('accounts', AccountsRetrieveUpdateAPIView.as_view(), name='user'),
-
+    path('fetchdetails', )
 ]
