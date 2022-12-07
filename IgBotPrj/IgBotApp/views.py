@@ -21,10 +21,9 @@ def requestLoadCredentials(request):
 
 
 def requestFollowProfile(request):
-    WebDriverManager.WebdriverActions.FollowProfile(
+    return HttpResponse(WebDriverManager.WebdriverActions.FollowProfile(
         request.GET.get("link", ""), request.GET.get("username")
-    )
-    return HttpResponse("Followed guy")
+    ))
 
 
 def requestLikePost(request):
