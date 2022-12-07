@@ -165,7 +165,7 @@ class WebdriverActions:
                         "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/div[1]/div[2]/section/main/div/header/section/ul/li[1]/div/span/span",
                     ).text
                 )
-                #make try get profilepicurl function and more
+                # make try get profilepicurl function and more
                 profilePictureURL = WebdriverActions.WaitForElement(
                     driver,
                     By.XPATH,
@@ -208,7 +208,7 @@ class WebdriverActions:
 
         WebdriverActions.LoadCookies(driver, username)
         try:
-            if(WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[1]/button/div/div[1]").text=="Following"):
+            if (WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[1]/button/div/div[1]").text == "Following"):
                 return "Already following"
             WebdriverActions.WaitForElement(
                 driver,
@@ -217,7 +217,6 @@ class WebdriverActions:
             ).click()
         except:
             return "wait error"
-
 
         print("\nFollowed " + link.split("/")[3] + "\n\n")
         return "\nFollowed " + link.split("/")[3] + "\n\n"
@@ -289,6 +288,32 @@ class WebdriverActions:
 
         return comments
 
+    # paramaters, in order: array of target profile usernames, amount of posts to like (if 0, it will like all posts on profile), array of comments to be used on profiles, bool like posts or not, bool follow or not, messages array with messages to send to profiles, username param (login username)
+
+    def FollowUsernames(targetUsernames, username):
+        for targetUsername in targetUsernames:
+            driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
+            WebdriverActions.LoadCookies(driver, username)
+            driver.get('https://instagram.com/'+targetUsername)
+            WebdriverActions.WaitForElement(
+                driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[1]/div/div/button").click()
+            print('Followed @' + targetUsername + ' as ' + username)
+            time.sleep(2)
+            driver.quit()
+
+    def LikePostsOfUsernamesProfiles(targetUsernames, username):
+        for targetUsername in targetUsernames:
+            driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
+            WebdriverActions.LoadCookies(driver, username)
+            driver.get('https://instagram.com/'+targetUsername)
+            WebdriverActions.WaitForElement(
+                driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/div[3]/article/div/div/div[1]/div[1]/a").click()
+            WebdriverActions.WaitForElement(
+                driver, By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[1]/span[1]/button").click()
+            print('Liked @' + targetUsername + ' profile posts as ' + username)
+            time.sleep(2)
+            driver.quit()
+
     def ScrapeFollowers(link, amount, username):
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get(urllib.parse.unquote(link))
@@ -355,16 +380,17 @@ class WebdriverActions:
                     + "&search_surface=follow_list_page"
                 )
                 usersJson = response.json()["users"]
-                print(usersJson[0])
                 for user in usersJson:
                     users.append(user["username"])
 
-                return json.dumps(users)
+                return users
         driver.quit()
         print("\nScraped followers.\n\n")
 
 
+
     # helper functions
+
     def DetectOS():
         if platform == 'darwin':
             return "/chromedriver"

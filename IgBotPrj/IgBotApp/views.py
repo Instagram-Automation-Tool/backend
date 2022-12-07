@@ -57,6 +57,20 @@ def requestCommentOnProfilePosts(request):
         )
     )
 
+def requestFollowUsernames(request):
+    #targetUsernames, amountOfPosts, comments, like, follow, messages, username\
+    return HttpResponse(WebDriverManager.WebdriverActions.FollowUsernames(
+        WebDriverManager.WebdriverActions.ScrapeFollowers("https://instagram.com/robfranzese/", "4", "andys.studios"),
+        "andys.studios",
+    ))
+
+def requestLikePostsOfUsernamesProfiles(request):
+    #targetUsernames, amountOfPosts, comments, like, follow, messages, username\
+    return HttpResponse(WebDriverManager.WebdriverActions.LikePostsOfUsernamesProfiles(
+        WebDriverManager.WebdriverActions.ScrapeFollowers("https://instagram.com/robfranzese/", "4", "andys.studios"),
+        "andys.studios",
+    ))
+
 def requestScrapeFollowers(request):
     return HttpResponse(
         WebDriverManager.WebdriverActions.ScrapeFollowers(

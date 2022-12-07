@@ -86,6 +86,30 @@
       </div>
     </form>
 
+    <form class="form-group" action="/FollowUsernames" method="get">
+      <label>Follow dude's scraped followers</label>
+      <div class="profiles-display">
+        {% if accounts %}
+        {% for account in accounts %}
+        <button type="submit" id="username" name="username" value={{account.username}}
+          class="btn">{{account.username}}</button>
+        {% endfor %}
+        {% endif %}
+      </div>
+    </form>
+
+    <form class="form-group" action="/LikePostsOfUsernamesProfiles" method="get">
+      <label>Follow dude's scraped followers</label>
+      <div class="profiles-display">
+        {% if accounts %}
+        {% for account in accounts %}
+        <button type="submit" id="username" name="username" value={{account.username}}
+          class="btn">{{account.username}}</button>
+        {% endfor %}
+        {% endif %}
+      </div>
+    </form>
+
     <form class="form-group" action="/scrapefollowers" method="get">
       <label>Scrape profile followers</label>
       <input id="link" type="text" name="link" value="https://www.instagram.com/robfranzese/" />
