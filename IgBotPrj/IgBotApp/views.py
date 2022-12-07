@@ -75,7 +75,6 @@ def PanelView(request):
         accounts = []
     return render(request, "panel/panel.html", {"accounts": accounts})
 
-
 # endregion
 
 # get all acounts 
