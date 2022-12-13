@@ -22,9 +22,10 @@ urlpatterns = [
     path("like", views.requestLikePost),
     path("comment", views.requestCommentOnPost),
     path("commentOnProfilePosts", views.requestCommentOnProfilePosts),
-    path("FollowUsernames", views.requestFollowUsernames),
-    path("LikePostsOfUsernamesProfiles", views.requestFollowUsernames),
-    path("scrapefollowers", views.requestScrapeFollowers),
+    path("followUsernames", views.requestFollowUsernames),
+    path("likePostsOfUsernamesProfiles", views.requestFollowUsernames),
+    path("scrapeHashtag", views.requestScrapeHashtag),
+    path("scrapeFollowers", views.requestScrapeFollowers),
     path('accounts', AccountsRetrieveUpdateAPIView.as_view(), name='user'),
 
 ]
