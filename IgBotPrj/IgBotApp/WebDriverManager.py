@@ -325,16 +325,27 @@ class WebdriverActions:
             driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div[1]/div/div/div[1]/div[1]/a").click()
         WebdriverActions.WaitForElement(
             driver, By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/div[1]/div/div[2]/a").click()
-        time.sleep(10)
-        ids = []
-        for entry in driver.get_log("performance"):
-            if search(re.escape('/comments/?can_support_threading=true'), entry["message"]):
-                if (json.loads(entry["message"])["message"]["params"].get("response") is not None):
-                    users = []
-                    for userField in json.loads(driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': json.loads(entry["message"])["message"]["params"]["requestId"]})["body"])["comments"][1:]:
-                        users.append(
-                            "UserID: " + userField["user_id"] + " | " + userField["user"]["username"] + ": " + userField["text"])
-                    ids.append(users)
+        howManyTimesToScrollAndLoad = 8
+        try:
+            while(howManyTimesToScrollAndLoad>0):
+                time.sleep(2)
+                driver.execute_script("window.scrollBy(0,2000)")
+                el = WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/ul/li/div/button")
+                if(el!=None):
+                    el.click()
+                else:
+                    break
+                howManyTimesToScrollAndLoad-=1
+        finally:
+            ids = []
+            for entry in driver.get_log("performance"):
+                if search(re.escape('/comments/?can_support_threading=true'), entry["message"]):
+                    if (json.loads(entry["message"])["message"]["params"].get("response") is not None):
+                        users = []
+                        for userField in json.loads(driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': json.loads(entry["message"])["message"]["params"]["requestId"]})["body"])["comments"]:
+                            users.append(
+                                "UserID: " + userField["user_id"] + " | " + userField["user"]["username"] + ": " + userField["text"])
+                        ids.append(users)
         return ids
 
     def ScrapeFollowers(link, amount, username):
@@ -452,15 +463,18 @@ class WebdriverActions:
             ],
         )
 
-        element = wait.until(
-            EC.element_to_be_clickable(
-                (
-                    by,
-                    value,
+        try:    
+            element=None
+            element= wait.until(
+                EC.element_to_be_clickable(
+                    (
+                        by,
+                        value,
+                    )
                 )
             )
-        )
-        return element
+        finally:
+            return element
 
     def CreateAccount(
         driver,
