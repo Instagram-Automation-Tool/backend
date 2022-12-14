@@ -26,7 +26,7 @@ import os
 
 from pytz import common_timezones_set
 
-from IgBotApp.models import InstagramAccount
+from IgBotApp.models import InstagramAccount, Interaction, Lead
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -345,7 +345,14 @@ class WebdriverActions:
                         for userField in json.loads(driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': json.loads(entry["message"])["message"]["params"]["requestId"]})["body"])["comments"]:
                             users.append(
                                 "UserID: " + userField["user_id"] + " | " + userField["user"]["username"] + ": " + userField["text"])
-                        ids.append(users)
+                                
+                            lead = Lead.objects.get_or_create(username=userField["user"]["username"], foundBy=InstagramAccount.objects.get(username=username))
+                            interaction = Interaction(lead, Lead.objects.get(username=userField["user"]["username"]).values("foundBy"), context=("Hashtag scraping | #" + hashtag))
+                            interaction.save()
+
+
+
+                        ids.append(userField["user"]["username"])
         return ids
 
     def ScrapeFollowers(link, amount, username):
@@ -358,7 +365,6 @@ class WebdriverActions:
             username,
         )
         driver.get(link+"/followers/")
-
         ids = []
         appIds = []
         for entry in driver.get_log("performance"):
@@ -416,7 +422,10 @@ class WebdriverActions:
                 usersJson = response.json()["users"]
                 for user in usersJson:
                     users.append(user["username"])
-
+                    lead = Lead.objects.get_or_create(username=user["username"], foundBy=InstagramAccount.objects.get(username=username))
+                    interaction = Interaction(lead, InstagramAccount.objects.get(lead.foundBy_id), context=("Follower scraping | " + link))
+                    lead.save()
+                    interaction.save()
                 return users
         driver.quit()
         print("\nScraped followers.\n\n")
