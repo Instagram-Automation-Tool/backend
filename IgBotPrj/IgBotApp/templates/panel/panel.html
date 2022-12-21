@@ -11,7 +11,7 @@
       <h1 style="font-size: medium">Sprint 2 API Application Demonstration</h1>
     </div>
 
-    <form class="form-group" action="storecredentials" method="get">
+    <form class="form-group" action="/storecredentials" method="get">
       <input id="username" type="text" name="username" value="" />
       <input id="password" type="password" name="password" value="" />
       <button type="submit" class="btn">Remember credentials</button>
@@ -86,7 +86,7 @@
       </div>
     </form>
 
-    <form class="form-group" action="/FollowUsernames" method="get">
+    <form class="form-group" action="/followUsernames" method="get">
       <label>Follow dude's scraped followers</label>
       <div class="profiles-display">
         {% if accounts %}
@@ -98,7 +98,7 @@
       </div>
     </form>
 
-    <form class="form-group" action="/LikePostsOfUsernamesProfiles" method="get">
+    <form class="form-group" action="/likePostsOfUsernamesProfiles" method="get">
       <label>Follow dude's scraped followers</label>
       <div class="profiles-display">
         {% if accounts %}
@@ -110,9 +110,24 @@
       </div>
     </form>
 
-    <form class="form-group" action="/scrapefollowers" method="get">
+    <form class="form-group" action="/scrapeHashtag" method="get">
+      <label>Scrape profiles on hashtag</label>
+      <label>Hashtag</label>
+      <input id="hashtag" type="text" name="hashtag" value="paintings" />
+      <div class="profil
+      es-display">
+        {% if accounts %}
+        {% for account in accounts %}
+        <button type="submit" id="username" name="username" value={{account.username}}
+          class="btn">{{account.username}}</button>
+        {% endfor %}
+        {% endif %}
+      </div>
+    </form>
+
+    <form class="form-group" action="/scrapeFollowers" method="get">
       <label>Scrape profile followers</label>
-      <input id="link" type="text" name="link" value="https://www.instagram.com/robfranzese/" />
+      <input id="link" type="text" name="link" value="https://www.instagram.com/robfranzese" />
       <label>Amount</label>
       <input id="amount" type="number" name="amount" value="12" />
       <div class="profiles-display">

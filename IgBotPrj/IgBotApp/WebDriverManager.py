@@ -2,7 +2,6 @@ import requests
 from re import search
 import re
 import json
-import pickle
 import time
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -27,7 +26,7 @@ import os
 
 from pytz import common_timezones_set
 
-from IgBotApp.models import InstagramAccount
+from IgBotApp.models import InstagramAccount, Interaction, Lead
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -289,7 +288,6 @@ class WebdriverActions:
         return comments
 
     # paramaters, in order: array of target profile usernames, amount of posts to like (if 0, it will like all posts on profile), array of comments to be used on profiles, bool like posts or not, bool follow or not, messages array with messages to send to profiles, username param (login username)
-
     def FollowUsernames(targetUsernames, username):
         for targetUsername in targetUsernames:
             driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
@@ -314,6 +312,49 @@ class WebdriverActions:
             time.sleep(2)
             driver.quit()
 
+    def ScrapeHashtag(hashtag, username):
+        driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
+        driver.get("https://www.instagram.com/explore/tags/" + hashtag)
+
+        WebdriverActions.LoadCookies(
+            driver,
+            username,
+        )
+
+        WebdriverActions.WaitForElement(
+            driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div[1]/div/div/div[1]/div[1]/a").click()
+        WebdriverActions.WaitForElement(
+            driver, By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/div[1]/div/div[2]/a").click()
+        howManyTimesToScrollAndLoad = 8
+        try:
+            while(howManyTimesToScrollAndLoad>0):
+                time.sleep(2)
+                driver.execute_script("window.scrollBy(0,2000)")
+                el = WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/ul/li/div/button")
+                if(el!=None):
+                    el.click()
+                else:
+                    break
+                howManyTimesToScrollAndLoad-=1
+        finally:
+            ids = []
+            for entry in driver.get_log("performance"):
+                if search(re.escape('/comments/?can_support_threading=true'), entry["message"]):
+                    if (json.loads(entry["message"])["message"]["params"].get("response") is not None):
+                        users = []
+                        for userField in json.loads(driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': json.loads(entry["message"])["message"]["params"]["requestId"]})["body"])["comments"]:
+                            users.append(
+                                "UserID: " + userField["user_id"] + " | " + userField["user"]["username"] + ": " + userField["text"])
+                                
+                            lead = Lead.objects.get_or_create(username=userField["user"]["username"], foundBy=InstagramAccount.objects.get(username=username))
+                            interaction = Interaction(lead, Lead.objects.get(username=userField["user"]["username"]).values("foundBy"), context=("Hashtag scraping | #" + hashtag))
+                            interaction.save()
+
+
+
+                        ids.append(userField["user"]["username"])
+        return ids
+
     def ScrapeFollowers(link, amount, username):
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get(urllib.parse.unquote(link))
@@ -323,8 +364,7 @@ class WebdriverActions:
             driver,
             username,
         )
-        driver.get(link+"followers/")
-
+        driver.get(link+"/followers/")
         ids = []
         appIds = []
         for entry in driver.get_log("performance"):
@@ -382,12 +422,13 @@ class WebdriverActions:
                 usersJson = response.json()["users"]
                 for user in usersJson:
                     users.append(user["username"])
-
+                    lead = Lead.objects.get_or_create(username=user["username"], foundBy=InstagramAccount.objects.get(username=username))
+                    interaction = Interaction(lead, InstagramAccount.objects.get(lead.foundBy_id), context=("Follower scraping | " + link))
+                    lead.save()
+                    interaction.save()
                 return users
         driver.quit()
         print("\nScraped followers.\n\n")
-
-
 
     # helper functions
 
@@ -431,15 +472,18 @@ class WebdriverActions:
             ],
         )
 
-        element = wait.until(
-            EC.element_to_be_clickable(
-                (
-                    by,
-                    value,
+        try:    
+            element=None
+            element= wait.until(
+                EC.element_to_be_clickable(
+                    (
+                        by,
+                        value,
+                    )
                 )
             )
-        )
-        return element
+        finally:
+            return element
 
     def CreateAccount(
         driver,
