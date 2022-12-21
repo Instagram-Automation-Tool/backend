@@ -26,7 +26,7 @@ import os
 
 from pytz import common_timezones_set
 
-from IgBotApp.models import InstagramAccount, Interaction, Lead
+from IgBotApp.models import InstagramAccount, Interaction, IGTarget
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -173,7 +173,6 @@ class WebdriverActions:
 
         WebdriverActions.CreateAccount(
             driver=driver,
-            expandiId=69,
             username=username,
             password=password,
             cookies=driver.get_cookies(),
@@ -327,15 +326,16 @@ class WebdriverActions:
             driver, By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/div[1]/div/div[2]/a").click()
         howManyTimesToScrollAndLoad = 8
         try:
-            while(howManyTimesToScrollAndLoad>0):
+            while (howManyTimesToScrollAndLoad > 0):
                 time.sleep(2)
                 driver.execute_script("window.scrollBy(0,2000)")
-                el = WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/ul/li/div/button")
-                if(el!=None):
+                el = WebdriverActions.WaitForElement(
+                    driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/ul/li/div/button")
+                if (el != None):
                     el.click()
                 else:
                     break
-                howManyTimesToScrollAndLoad-=1
+                howManyTimesToScrollAndLoad -= 1
         finally:
             ids = []
             for entry in driver.get_log("performance"):
@@ -345,12 +345,9 @@ class WebdriverActions:
                         for userField in json.loads(driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': json.loads(entry["message"])["message"]["params"]["requestId"]})["body"])["comments"]:
                             users.append(
                                 "UserID: " + userField["user_id"] + " | " + userField["user"]["username"] + ": " + userField["text"])
-                                
-                            lead = Lead.objects.get_or_create(username=userField["user"]["username"], foundBy=InstagramAccount.objects.get(username=username))
-                            interaction = Interaction(lead, Lead.objects.get(username=userField["user"]["username"]).values("foundBy"), context=("Hashtag scraping | #" + hashtag))
-                            interaction.save()
 
-
+                            WebdriverActions.LogIgTarget(userField["user"]["username"], username, (
+                                "Hashtag scraping | #" + hashtag), {'Message': 'Success', 'UserId': userField["user_id"], 'Username': userField["user"]["username"], 'Comment': userField["text"]})
 
                         ids.append(userField["user"]["username"])
         return ids
@@ -422,10 +419,14 @@ class WebdriverActions:
                 usersJson = response.json()["users"]
                 for user in usersJson:
                     users.append(user["username"])
-                    lead = Lead.objects.get_or_create(username=user["username"], foundBy=InstagramAccount.objects.get(username=username))
-                    interaction = Interaction(lead, InstagramAccount.objects.get(lead.foundBy_id), context=("Follower scraping | " + link))
-                    lead.save()
-                    interaction.save()
+                    WebdriverActions.LogIgTarget(user["username"], username, (
+                        "Follower scraping"), {'Message': 'Test'})
+
+                    # target = IGTarget.objects.get_or_create(
+                    #     username=user["username"], foundBy=InstagramAccount.objects.get(username=username))
+                    # interaction = Interaction(target, foundBy=InstagramAccount.objects.all().values("foundBy_id").get(username=user["username"]), context=("Follower scraping | " + link))
+                    # target.save()
+                    # interaction.save()
                 return users
         driver.quit()
         print("\nScraped followers.\n\n")
@@ -436,6 +437,16 @@ class WebdriverActions:
         if platform == 'darwin':
             return "/chromedriver"
         return "chromedrive"
+
+    def LogIgTarget(targetUsername, foundByUsername, interactionContext, interactionData):
+        foundBy = InstagramAccount.objects.get(username=foundByUsername)
+        print(foundByUsername)
+        target = IGTarget.objects.get_or_create(
+            username=targetUsername, foundBy=foundBy)
+        print(foundBy)
+        interaction = Interaction(
+            reachedWhileLoggedInAs=foundBy, reachedAccount=target[0], context=interactionContext, data=interactionData)
+        interaction.save()
 
     def GetWebDriver(userAgent):
         chromeOptions = WebdriverActions.GetOptions(userAgent)
@@ -472,9 +483,9 @@ class WebdriverActions:
             ],
         )
 
-        try:    
-            element=None
-            element= wait.until(
+        try:
+            element = None
+            element = wait.until(
                 EC.element_to_be_clickable(
                     (
                         by,
@@ -487,7 +498,6 @@ class WebdriverActions:
 
     def CreateAccount(
         driver,
-        expandiId,
         username,
         password,
         cookies,
@@ -499,7 +509,6 @@ class WebdriverActions:
         profilePictureURL,
     ):
         account = InstagramAccount(
-            expandiId=69,
             username=username,
             password=password,
             cookies=cookies,
@@ -510,7 +519,7 @@ class WebdriverActions:
             postsCount=postsCount,
             profilePictureURL=profilePictureURL,
         )
-        print("New account! ExpandiId:", expandiId)
+        print("New account!")
         account.save()
 
     def LoadCookies(driver, username):
