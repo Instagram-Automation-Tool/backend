@@ -21,6 +21,7 @@ from . import dev_options
 from lib2to3.pgen2 import driver
 from lib2to3.pgen2.token import NEWLINE
 from sys import platform
+
 # from msilib.schema import Environment
 import os
 
@@ -34,8 +35,10 @@ os.environ["PATH"] += os.pathsep + os.path.join(BASE_DIR, "/gecko")
 
 # index 0 = desktop
 # index 1 = mobile
-USER_AGENTS = ["--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
-               "--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.11"]
+USER_AGENTS = [
+    "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
+    "--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.11",
+]
 
 
 # todo: add identifiers to paramaters ex: def FUNC(input: String)
@@ -52,25 +55,36 @@ class WebdriverActions:
         WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
-            "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[1]"
+            "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[1]",
         ).click()
 
         WebdriverActions.WaitForElement(
-            driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div[2]/div[1]/div[2]/form/div/div[1]/div/label/input"
+            driver,
+            By.XPATH,
+            "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div[2]/div[1]/div[2]/form/div/div[1]/div/label/input",
         ).send_keys(username)
         WebdriverActions.WaitForElement(
-            driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div[2]/div[1]/div[2]/form/div/div[2]/div/label/input"
+            driver,
+            By.XPATH,
+            "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div[2]/div[1]/div[2]/form/div/div[2]/div/label/input",
         ).send_keys(password)
         WebdriverActions.WaitForElement(
-            driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div[2]/div[1]/div[2]/form/div/div[3]/button"
+            driver,
+            By.XPATH,
+            "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div[2]/div[1]/div[2]/form/div/div[3]/button",
         ).click()
 
-        time.sleep(10)
+        time.sleep(4)
 
         driver.get("https://instagram.com/" + username)
 
         bio, followersCount, followingCount, postsCount, profilePictureURL = [
-            "error", "error", "error", "error", "error"]
+            "error",
+            "error",
+            "error",
+            "error",
+            "error",
+        ]
 
         try:
             bio = WebdriverActions.WaitForElement(
@@ -89,7 +103,7 @@ class WebdriverActions:
                 WebdriverActions.WaitForElement(
                     driver,
                     By.XPATH,
-                    "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/ul/li[3]/a/div/span"
+                    "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/ul/li[3]/a/div/span",
                 ).text
             )
             postsCount = int(
@@ -122,7 +136,7 @@ class WebdriverActions:
                     WebdriverActions.WaitForElement(
                         driver,
                         By.XPATH,
-                        "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/section/ul/li[3]/a/div/span"
+                        "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/section/ul/li[3]/a/div/span",
                     ).text
                 )
                 postsCount = int(
@@ -154,7 +168,7 @@ class WebdriverActions:
                     WebdriverActions.WaitForElement(
                         driver,
                         By.XPATH,
-                        "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/div[1]/div[2]/section/main/div/header/section/ul/li[3]/a/div/span/span"
+                        "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/div[1]/div[2]/section/main/div/header/section/ul/li[3]/a/div/span/span",
                     ).text
                 )
                 postsCount = int(
@@ -200,43 +214,59 @@ class WebdriverActions:
 
         print("\nLoaded session.\n\n")
 
-    def FollowProfile(link, username):
+    def FollowProfile(target, username):
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
-        driver.get(link)
+        driver.get("https://www.instagram.com/" + target)
 
         WebdriverActions.LoadCookies(driver, username)
-        try:
-            if (WebdriverActions.WaitForElement(driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[1]/button/div/div[1]").text == "Following"):
-                return "Already following"
+        if (
             WebdriverActions.WaitForElement(
                 driver,
                 By.XPATH,
-                "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[1]/button"
-            ).click()
-        except:
-            return "wait error"
-
-        print("\nFollowed " + link.split("/")[3] + "\n\n")
-        return "\nFollowed " + link.split("/")[3] + "\n\n"
+                "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[1]/button/div/div[1]",
+            ).text
+            == "Following"
+        ):
+            return WebdriverActions.LogInteraction(
+                target, username, "Tried to follow profile, already following."
+            )
+        WebdriverActions.WaitForElement(
+            driver,
+            By.XPATH,
+            "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[1]/button",
+        ).click()
+        driver.quit
+        return WebdriverActions.LogInteraction(target, username, "Followed profile")
 
     def LikePost(link, username):
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get(urllib.parse.unquote(link))
 
         WebdriverActions.LoadCookies(driver, username)
+        targetUsername = WebdriverActions.WaitForElement(
+            driver,
+            By.XPATH,
+            "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div[1]/div/article/div/div[2]/div/div[1]/div/header/div[2]/div[1]/div[1]/div/div/div[1]/a",
+        ).text
         WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
             "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div[1]/div/article/div/div[2]/div/div[2]/section[1]/span[1]/button",
         ).click()
 
-        print("\nLiked post.\n\n")
+        return WebdriverActions.LogInteraction(
+            targetUsername, username, "Liked post.", {"Link": link}
+        )
 
     def CommentOnPost(link, comment, username):
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get(link)
         WebdriverActions.LoadCookies(driver, username)
-
+        targetUsername = WebdriverActions.WaitForElement(
+            driver,
+            By.XPATH,
+            "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div[1]/div/article/div/div[2]/div/div[1]/div/header/div[2]/div[1]/div[1]/div/div/div[1]/a",
+        ).text
         webElement = WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
@@ -250,66 +280,158 @@ class WebdriverActions:
         )
 
         webElement.send_keys(comment + Keys.ENTER)
-
-        print("\nCommented on post.\n\n")
+        return WebdriverActions.LogInteraction(
+            targetUsername,
+            username,
+            "Commented on post.",
+            {"Link": link, "Comment": comment},
+        )
 
     def CommentOnProfilePosts(targetUsername, comments, like, username):
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
-        driver.get('https://instagram.com/'+targetUsername)
+        driver.get("https://instagram.com/" + targetUsername)
+        interactions = []
         WebdriverActions.LoadCookies(driver, username)
         # First Post
         WebdriverActions.WaitForElement(
-            driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/div[2]/article/div[1]/div/div[1]/div[1]/a").click()
+            driver,
+            By.XPATH,
+            "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/div[2]/article/div[1]/div/div[1]/div[1]/a",
+        ).click()
 
-        if (len(comments) > 0):
-            if (like):
+        if len(comments) > 0:
+            if like:
                 WebdriverActions.WaitForElement(
-                    driver, By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[1]/span[1]/button").click()
+                    driver,
+                    By.XPATH,
+                    "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[1]/span[1]/button",
+                ).click()
             WebdriverActions.WaitForElement(
-                driver, By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea").click()
+                driver,
+                By.XPATH,
+                "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea",
+            ).click()
             WebdriverActions.WaitForElement(
-                driver, By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea").send_keys(comments[0] + Keys.RETURN)
+                driver,
+                By.XPATH,
+                "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea",
+            ).send_keys(comments[0] + Keys.RETURN)
             WebdriverActions.WaitForElement(
-                driver, By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[1]/div/div/div/button").click()
+                driver,
+                By.XPATH,
+                "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[1]/div/div/div/button",
+            ).click()
+            interactions.append(
+                WebdriverActions.LogInteraction(
+                    targetUsername,
+                    username,
+                    "Commented on post.",
+                    {"Comment": comments[0], "alsoLike": like},
+                )
+            )
 
-        if (len(comments) > 1):
+        if len(comments) > 1:
             for comment in comments[1:]:
-                if (like):
+                if like:
                     WebdriverActions.WaitForElement(
-                        driver, By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[1]/span[1]/button").click()
+                        driver,
+                        By.XPATH,
+                        "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[1]/span[1]/button",
+                    ).click()
                 WebdriverActions.WaitForElement(
-                    driver, By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea").click()
+                    driver,
+                    By.XPATH,
+                    "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea",
+                ).click()
                 WebdriverActions.WaitForElement(
-                    driver, By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea").send_keys(comment + Keys.RETURN)
+                    driver,
+                    By.XPATH,
+                    "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/textarea",
+                ).send_keys(comment + Keys.RETURN)
                 WebdriverActions.WaitForElement(
-                    driver, By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[1]/div/div/div[2]/button").click()
-
-        return comments
+                    driver,
+                    By.XPATH,
+                    "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[1]/div/div/div[2]/button",
+                ).click()
+                interactions.append(
+                    WebdriverActions.LogInteraction(
+                        targetUsername,
+                        username,
+                        "Commented on post.",
+                        {"Comment": comment, "alsoLike": like},
+                    )
+                )
+        return interactions
 
     # paramaters, in order: array of target profile usernames, amount of posts to like (if 0, it will like all posts on profile), array of comments to be used on profiles, bool like posts or not, bool follow or not, messages array with messages to send to profiles, username param (login username)
     def FollowUsernames(targetUsernames, username):
+        interactions = []
         for targetUsername in targetUsernames:
-            driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
-            WebdriverActions.LoadCookies(driver, username)
-            driver.get('https://instagram.com/'+targetUsername)
-            WebdriverActions.WaitForElement(
-                driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[1]/div/div/button").click()
-            print('Followed @' + targetUsername + ' as ' + username)
-            time.sleep(2)
-            driver.quit()
+            interactions.append(
+                WebdriverActions.FollowProfile(targetUsername, username)
+            )
+        return interactions
 
-    def LikePostsOfUsernamesProfiles(targetUsernames, username):
+    def LikePostsOfUsernamesProfiles(targetUsernames, count, username):
+        interactions = []
         for targetUsername in targetUsernames:
             driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
+            driver.get("https://instagram.com/")
             WebdriverActions.LoadCookies(driver, username)
-            driver.get('https://instagram.com/'+targetUsername)
+            driver.get("https://instagram.com/" + targetUsername)
+            try:
+                WebdriverActions.WaitForElement(
+                    driver,
+                    By.XPATH,
+                    "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/div[2]/article/div[1]/div/div[1]/div[1]/a",
+                ).click()
+            except:
+                WebdriverActions.WaitForElement(
+                    driver,
+                    By.XPATH,
+                    "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/div[3]/article/div[1]/div/div[1]/div[1]/a",
+                ).click()
+            interactions.append(
+                WebdriverActions.LogInteraction(
+                    targetUsername,
+                    username,
+                    "Liked post.",
+                    {"Link": driver.current_url},
+                )
+            )
             WebdriverActions.WaitForElement(
-                driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/div[3]/article/div/div/div[1]/div[1]/a").click()
+                driver,
+                By.XPATH,
+                "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[1]/span[1]/button",
+            ).click()
             WebdriverActions.WaitForElement(
-                driver, By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[1]/span[1]/button").click()
-            print('Liked @' + targetUsername + ' profile posts as ' + username)
-            time.sleep(2)
+                driver,
+                By.XPATH,
+                "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[1]/div/div/div/button",
+            ).click()
+
+            for _ in range(int(count) - 1):
+                WebdriverActions.WaitForElement(
+                    driver,
+                    By.XPATH,
+                    "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[1]/span[1]/button",
+                ).click()
+                interactions.append(
+                    WebdriverActions.LogInteraction(
+                        targetUsername,
+                        username,
+                        "Liked post.",
+                        {"Link": driver.current_url},
+                    )
+                )
+                WebdriverActions.WaitForElement(
+                    driver,
+                    By.XPATH,
+                    "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[1]/div/div/div[2]/button",
+                ).click()
+
             driver.quit()
+        return interactions
 
     def ScrapeHashtag(hashtag, username):
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
@@ -321,17 +443,26 @@ class WebdriverActions:
         )
 
         WebdriverActions.WaitForElement(
-            driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div[1]/div/div/div[1]/div[1]/a").click()
+            driver,
+            By.XPATH,
+            "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/article/div[1]/div/div/div[1]/div[1]/a",
+        ).click()
         WebdriverActions.WaitForElement(
-            driver, By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/div[1]/div/div[2]/a").click()
-        howManyTimesToScrollAndLoad = 8
+            driver,
+            By.XPATH,
+            "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/div[1]/div/div[2]/a",
+        ).click()
+        howManyTimesToScrollAndLoad = 12
         try:
-            while (howManyTimesToScrollAndLoad > 0):
+            while howManyTimesToScrollAndLoad > 0:
                 time.sleep(2)
                 driver.execute_script("window.scrollBy(0,2000)")
                 el = WebdriverActions.WaitForElement(
-                    driver, By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/ul/li/div/button")
-                if (el != None):
+                    driver,
+                    By.XPATH,
+                    "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/ul/li/div/button",
+                )
+                if el != None:
                     el.click()
                 else:
                     break
@@ -339,17 +470,39 @@ class WebdriverActions:
         finally:
             ids = []
             for entry in driver.get_log("performance"):
-                if search(re.escape('/comments/?can_support_threading=true'), entry["message"]):
-                    if (json.loads(entry["message"])["message"]["params"].get("response") is not None):
-                        users = []
-                        for userField in json.loads(driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': json.loads(entry["message"])["message"]["params"]["requestId"]})["body"])["comments"]:
-                            users.append(
-                                "UserID: " + userField["user_id"] + " | " + userField["user"]["username"] + ": " + userField["text"])
-
-                            WebdriverActions.LogIgTarget(userField["user"]["username"], username, (
-                                "Hashtag scraping | #" + hashtag), {'Message': 'Success', 'UserId': userField["user_id"], 'Username': userField["user"]["username"], 'Comment': userField["text"]})
-
-                        ids.append(userField["user"]["username"])
+                if search(
+                    re.escape("/comments/?can_support_threading=true"), entry["message"]
+                ):
+                    if (
+                        json.loads(entry["message"])["message"]["params"].get(
+                            "response"
+                        )
+                        is not None
+                    ):
+                        for userField in json.loads(
+                            driver.execute_cdp_cmd(
+                                "Network.getResponseBody",
+                                {
+                                    "requestId": json.loads(entry["message"])[
+                                        "message"
+                                    ]["params"]["requestId"]
+                                },
+                            )["body"]
+                        )["comments"]:
+                            if userField["user"]["username"] in ids:
+                                continue
+                            ids.append(userField["user"]["username"])
+                            WebdriverActions.LogIgTarget(
+                                userField["user"]["username"],
+                                username,
+                                ("Hashtag scraping | #" + hashtag),
+                                {
+                                    "Message": "Success",
+                                    "UserId": userField["user_id"],
+                                    "Username": userField["user"]["username"],
+                                    "Comment": userField["text"],
+                                },
+                            )
         return ids
 
     def ScrapeFollowers(link, amount, username):
@@ -361,7 +514,7 @@ class WebdriverActions:
             driver,
             username,
         )
-        driver.get(link+"/followers/")
+        driver.get(link + "/followers/")
         ids = []
         appIds = []
         for entry in driver.get_log("performance"):
@@ -419,14 +572,13 @@ class WebdriverActions:
                 usersJson = response.json()["users"]
                 for user in usersJson:
                     users.append(user["username"])
-                    WebdriverActions.LogIgTarget(user["username"], username, (
-                        "Follower scraping"), {'Message': 'Test'})
+                    WebdriverActions.LogIgTarget(
+                        user["username"],
+                        username,
+                        ("Follower scraping"),
+                        {"Message": "Test"},
+                    )
 
-                    # target = IGTarget.objects.get_or_create(
-                    #     username=user["username"], foundBy=InstagramAccount.objects.get(username=username))
-                    # interaction = Interaction(target, foundBy=InstagramAccount.objects.all().values("foundBy_id").get(username=user["username"]), context=("Follower scraping | " + link))
-                    # target.save()
-                    # interaction.save()
                 return users
         driver.quit()
         print("\nScraped followers.\n\n")
@@ -434,19 +586,24 @@ class WebdriverActions:
     # helper functions
 
     def DetectOS():
-        if platform == 'darwin':
+        if platform == "darwin":
             return "/chromedriver"
         return "chromedrive"
 
-    def LogIgTarget(targetUsername, foundByUsername, interactionContext, interactionData):
-        foundBy = InstagramAccount.objects.get(username=foundByUsername)
-        print(foundByUsername)
+    def LogInteraction(targetUsername, loggedInAs, context, data=None):
+        foundBy = InstagramAccount.objects.get(username=loggedInAs)
         target = IGTarget.objects.get_or_create(
-            username=targetUsername, foundBy=foundBy)
-        print(foundBy)
+            username=targetUsername, foundBy=foundBy
+        )
         interaction = Interaction(
-            reachedWhileLoggedInAs=foundBy, reachedAccount=target[0], context=interactionContext, data=interactionData)
+            reachedWhileLoggedInAs=foundBy,
+            reachedAccount=target[0],
+            context=context,
+        )
+        if data is not None:
+            interaction.data = data
         interaction.save()
+        return interaction
 
     def GetWebDriver(userAgent):
         chromeOptions = WebdriverActions.GetOptions(userAgent)
@@ -464,8 +621,7 @@ class WebdriverActions:
         if dev_options.Headless:
             chromeOptions.add_argument("--headless")
         if dev_options.Proxyless != True:
-            chromeOptions.add_argument(
-                "--proxy-server=%s" % "hostname" + ":" + "port")
+            chromeOptions.add_argument("--proxy-server=%s" % "hostname" + ":" + "port")
         if dev_options.KeepWindowOpenOnFinish == True:
             chromeOptions.add_experimental_option("detach", True)
         chromeOptions.add_argument(userAgent)

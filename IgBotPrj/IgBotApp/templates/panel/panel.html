@@ -29,7 +29,7 @@
     </form>
     <form class="form-group" action="/follow" method="get">
       <label>Follow profile</label>
-      <input id="link" type="text" name="link" value="https://instagram.com/migos/" />
+      <input id="link" type="text" name="link" value="migos" />
       <div class="profiles-display">
         {% if accounts %}
         {% for account in accounts %}
@@ -71,11 +71,10 @@
     <form class="form-group" action="/commentOnProfilePosts" method="get">
       <label>Comment on profile's posts</label>
       <input id="targetUsername" type="text" name="targetUsername" value="migos" />
-      <label>Text</label>
-      <input id="comment" type="text" name="comment" value="This is so cool!" />
+      <label>Comments (separated by comma)</label>
+      <input id="comments" type="text" name="comments"
+        value="This is so cool!, Wow this is AMAZING. Thanks., This left me in tears. I am glad this is published." />
       <label><input type=checkbox name="like" id="like" checked="True" unchecked="False">Like</label>
-      <label>Count</label>
-      <input id="count" type="number" name="count" value="3" />
       <div class="profiles-display">
         {% if accounts %}
         {% for account in accounts %}
@@ -87,7 +86,8 @@
     </form>
 
     <form class="form-group" action="/followUsernames" method="get">
-      <label>Follow dude's scraped followers</label>
+      <label>Follow target profiles, separated by comma, as the selected account</label>
+      <input id="targets" type="text" name="targets" value="migos, chieffkeeffsossa, instagram" />
       <div class="profiles-display">
         {% if accounts %}
         {% for account in accounts %}
@@ -99,7 +99,9 @@
     </form>
 
     <form class="form-group" action="/likePostsOfUsernamesProfiles" method="get">
-      <label>Follow dude's scraped followers</label>
+      <label>Like posts of target profiles, separated by comma, as the selected account</label>
+      <input id="targets" type="text" name="targets" value="instagram, migos" />
+      <input id="count" type="number" name="count" value="3" />
       <div class="profiles-display">
         {% if accounts %}
         {% for account in accounts %}

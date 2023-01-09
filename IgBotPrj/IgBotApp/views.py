@@ -8,9 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 import json
 
-# todo: improve request responses and actually process inputs
-
-
+# region API endpoints
 def requestStoreCredentials(request):
     WebDriverManager.WebdriverActions.StoreLoginCredentials(
         request.GET.get("username"), request.GET.get("password")
@@ -24,79 +22,85 @@ def requestLoadCredentials(request):
 
 
 def requestFollowProfile(request):
-    return HttpResponse(WebDriverManager.WebdriverActions.FollowProfile(
-        request.GET.get("link", ""), request.GET.get("username")
-    ))
+    return HttpResponse(
+        WebDriverManager.WebdriverActions.FollowProfile(
+            request.GET.get("link", ""), request.GET.get("username")
+        )
+    )
 
 
 def requestLikePost(request):
-    WebDriverManager.WebdriverActions.LikePost(
-        request.GET.get("link", ""), request.GET.get("username"))
-    return HttpResponse("Liked post")
+    return HttpResponse(
+        WebDriverManager.WebdriverActions.LikePost(
+            request.GET.get("link", ""), request.GET.get("username")
+        )
+    )
 
 
 def requestCommentOnPost(request):
-    WebDriverManager.WebdriverActions.CommentOnPost(
-        request.GET.get("link"),
-        request.GET.get("comment"),
-        request.GET.get("username"),
+    return HttpResponse(
+        WebDriverManager.WebdriverActions.CommentOnPost(
+            request.GET.get("link"),
+            request.GET.get("comment"),
+            request.GET.get("username"),
+        )
     )
-    return HttpResponse("Commented")
 
 
 def requestCommentOnProfilePosts(request):
-    comments = []
-    comment = request.GET.get("comment")
-    count = int(request.GET.get("count"))
-    while (count > 0):
-        comments.append(comment)
-        count = count-1
     return HttpResponse(
         WebDriverManager.WebdriverActions.CommentOnProfilePosts(
             request.GET.get("targetUsername"),
-            comments,
+            request.GET.get("comments").split(","),
             request.GET.get("like") == "on",
-            request.GET.get("username")
+            request.GET.get("username"),
         )
     )
 
 
 def requestFollowUsernames(request):
-    # targetUsernames, amountOfPosts, comments, like, follow, messages, username\
-    return HttpResponse(WebDriverManager.WebdriverActions.FollowUsernames(
-        WebDriverManager.WebdriverActions.ScrapeFollowers(
-            "https://instagram.com/robfranzese/", "4", "andys.studios"),
-        "andys.studios",
-    ))
+    return HttpResponse(
+        WebDriverManager.WebdriverActions.FollowUsernames(
+            request.GET.get("targets").replace(" ", "").split(","),
+            request.GET.get("username"),
+        )
+    )
 
 
 def requestLikePostsOfUsernamesProfiles(request):
-    # targetUsernames, amountOfPosts, comments, like, follow, messages, username\
-    return HttpResponse(WebDriverManager.WebdriverActions.LikePostsOfUsernamesProfiles(
-        WebDriverManager.WebdriverActions.ScrapeFollowers(
-            "https://instagram.com/robfranzese/", "4", "andys.studios"),
-        "andys.studios",
-    ))
+    return HttpResponse(
+        WebDriverManager.WebdriverActions.LikePostsOfUsernamesProfiles(
+            request.GET.get("targets").replace(" ", "").split(","),
+            request.GET.get("count"),
+            request.GET.get("username"),
+        )
+    )
 
 
 def requestScrapeHashtag(request):
-    return HttpResponse(json.dumps(
-        WebDriverManager.WebdriverActions.ScrapeHashtag(
-            request.GET.get("hashtag"),
-            request.GET.get("username"),
-        ))
+    return HttpResponse(
+        json.dumps(
+            WebDriverManager.WebdriverActions.ScrapeHashtag(
+                request.GET.get("hashtag"),
+                request.GET.get("username"),
+            )
+        )
     )
 
 
 def requestScrapeFollowers(request):
-    return HttpResponse(json.dumps(
-        WebDriverManager.WebdriverActions.ScrapeFollowers(
-            request.GET.get("link"),
-            request.GET.get("amount"),
-            request.GET.get("username"),
-        ))
+    return HttpResponse(
+        json.dumps(
+            WebDriverManager.WebdriverActions.ScrapeFollowers(
+                request.GET.get("link"),
+                request.GET.get("amount"),
+                request.GET.get("username"),
+            )
+        )
     )
 
+
+# endregion
 
 # region showcase panel
 def PanelView(request):
