@@ -87,7 +87,8 @@
     </form>
 
     <form class="form-group" action="/followUsernames" method="get">
-      <label>Follow dude's scraped followers</label>
+      <label>Follow target profiles, separated by comma, as the selected account</label>
+      <input id="targets" type="text" name="targets" value="migos, chieffkeeffsossa, instagram" />
       <div class="profiles-display">
         {% if accounts %}
         {% for account in accounts %}
@@ -99,7 +100,9 @@
     </form>
 
     <form class="form-group" action="/likePostsOfUsernamesProfiles" method="get">
-      <label>Follow dude's scraped followers</label>
+      <label>Like posts of target profiles, separated by comma, as the selected account</label>
+      <input id="targets" type="text" name="targets" value="instagram, migos" />
+      <input id="count" type="number" name="count" value="3" />
       <div class="profiles-display">
         {% if accounts %}
         {% for account in accounts %}

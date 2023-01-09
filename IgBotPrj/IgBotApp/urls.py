@@ -23,9 +23,8 @@ urlpatterns = [
     path("comment", views.requestCommentOnPost),
     path("commentOnProfilePosts", views.requestCommentOnProfilePosts),
     path("followUsernames", views.requestFollowUsernames),
-    path("likePostsOfUsernamesProfiles", views.requestFollowUsernames),
+    path("likePostsOfUsernamesProfiles", views.requestLikePostsOfUsernamesProfiles),
     path("scrapeHashtag", views.requestScrapeHashtag),
     path("scrapeFollowers", views.requestScrapeFollowers),
-    path('accounts', AccountsRetrieveUpdateAPIView.as_view(), name='user'),
-
+    path("accounts", AccountsRetrieveUpdateAPIView.as_view(), name="user"),
 ]
