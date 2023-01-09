@@ -8,9 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 import json
 
-# todo: improve request responses and actually process inputs
-
-
+# region API endpoints
 def requestStoreCredentials(request):
     WebDriverManager.WebdriverActions.StoreLoginCredentials(
         request.GET.get("username"), request.GET.get("password")
@@ -32,32 +30,28 @@ def requestFollowProfile(request):
 
 
 def requestLikePost(request):
-    WebDriverManager.WebdriverActions.LikePost(
-        request.GET.get("link", ""), request.GET.get("username")
+    return HttpResponse(
+        WebDriverManager.WebdriverActions.LikePost(
+            request.GET.get("link", ""), request.GET.get("username")
+        )
     )
-    return HttpResponse("Liked post")
 
 
 def requestCommentOnPost(request):
-    WebDriverManager.WebdriverActions.CommentOnPost(
-        request.GET.get("link"),
-        request.GET.get("comment"),
-        request.GET.get("username"),
+    return HttpResponse(
+        WebDriverManager.WebdriverActions.CommentOnPost(
+            request.GET.get("link"),
+            request.GET.get("comment"),
+            request.GET.get("username"),
+        )
     )
-    return HttpResponse("Commented")
 
 
 def requestCommentOnProfilePosts(request):
-    comments = []
-    comment = request.GET.get("comment")
-    count = int(request.GET.get("count"))
-    while count > 0:
-        comments.append(comment)
-        count = count - 1
     return HttpResponse(
         WebDriverManager.WebdriverActions.CommentOnProfilePosts(
             request.GET.get("targetUsername"),
-            comments,
+            request.GET.get("comments").split(","),
             request.GET.get("like") == "on",
             request.GET.get("username"),
         )
@@ -105,6 +99,8 @@ def requestScrapeFollowers(request):
         )
     )
 
+
+# endregion
 
 # region showcase panel
 def PanelView(request):

@@ -214,50 +214,59 @@ class WebdriverActions:
 
         print("\nLoaded session.\n\n")
 
-    def FollowProfile(link, username):
+    def FollowProfile(target, username):
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
-        driver.get(link)
+        driver.get("https://www.instagram.com/" + target)
 
         WebdriverActions.LoadCookies(driver, username)
-        try:
-            if (
-                WebdriverActions.WaitForElement(
-                    driver,
-                    By.XPATH,
-                    "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[1]/button/div/div[1]",
-                ).text
-                == "Following"
-            ):
-                return "Already following"
+        if (
             WebdriverActions.WaitForElement(
                 driver,
                 By.XPATH,
-                "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[1]/button",
-            ).click()
-        except:
-            return "wait error"
-
-        print("\nFollowed " + link.split("/")[3] + "\n\n")
-        return "\nFollowed " + link.split("/")[3] + "\n\n"
+                "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[1]/button/div/div[1]",
+            ).text
+            == "Following"
+        ):
+            return WebdriverActions.LogInteraction(
+                target, username, "Tried to follow profile, already following."
+            )
+        WebdriverActions.WaitForElement(
+            driver,
+            By.XPATH,
+            "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[1]/button",
+        ).click()
+        driver.quit
+        return WebdriverActions.LogInteraction(target, username, "Followed profile")
 
     def LikePost(link, username):
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get(urllib.parse.unquote(link))
 
         WebdriverActions.LoadCookies(driver, username)
+        targetUsername = WebdriverActions.WaitForElement(
+            driver,
+            By.XPATH,
+            "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div[1]/div/article/div/div[2]/div/div[1]/div/header/div[2]/div[1]/div[1]/div/div/div[1]/a",
+        ).text
         WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
             "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div[1]/div/article/div/div[2]/div/div[2]/section[1]/span[1]/button",
         ).click()
 
-        print("\nLiked post.\n\n")
+        return WebdriverActions.LogInteraction(
+            targetUsername, username, "Liked post.", {"Link": link}
+        )
 
     def CommentOnPost(link, comment, username):
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get(link)
         WebdriverActions.LoadCookies(driver, username)
-
+        targetUsername = WebdriverActions.WaitForElement(
+            driver,
+            By.XPATH,
+            "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div[1]/div/article/div/div[2]/div/div[1]/div/header/div[2]/div[1]/div[1]/div/div/div[1]/a",
+        ).text
         webElement = WebdriverActions.WaitForElement(
             driver,
             By.XPATH,
@@ -271,12 +280,17 @@ class WebdriverActions:
         )
 
         webElement.send_keys(comment + Keys.ENTER)
-
-        print("\nCommented on post.\n\n")
+        return WebdriverActions.LogInteraction(
+            targetUsername,
+            username,
+            "Commented on post.",
+            {"Link": link, "Comment": comment},
+        )
 
     def CommentOnProfilePosts(targetUsername, comments, like, username):
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get("https://instagram.com/" + targetUsername)
+        interactions = []
         WebdriverActions.LoadCookies(driver, username)
         # First Post
         WebdriverActions.WaitForElement(
@@ -307,6 +321,14 @@ class WebdriverActions:
                 By.XPATH,
                 "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[1]/div/div/div/button",
             ).click()
+            interactions.append(
+                WebdriverActions.LogInteraction(
+                    targetUsername,
+                    username,
+                    "Commented on post.",
+                    {"Comment": comments[0], "alsoLike": like},
+                )
+            )
 
         if len(comments) > 1:
             for comment in comments[1:]:
@@ -331,34 +353,27 @@ class WebdriverActions:
                     By.XPATH,
                     "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[1]/div/div/div[2]/button",
                 ).click()
-
-        return comments
+                interactions.append(
+                    WebdriverActions.LogInteraction(
+                        targetUsername,
+                        username,
+                        "Commented on post.",
+                        {"Comment": comment, "alsoLike": like},
+                    )
+                )
+        return interactions
 
     # paramaters, in order: array of target profile usernames, amount of posts to like (if 0, it will like all posts on profile), array of comments to be used on profiles, bool like posts or not, bool follow or not, messages array with messages to send to profiles, username param (login username)
     def FollowUsernames(targetUsernames, username):
+        interactions = []
         for targetUsername in targetUsernames:
-            driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
-            driver.get("https://instagram.com/")
-            WebdriverActions.LoadCookies(driver, username)
-            driver.get("https://instagram.com/" + targetUsername)
-            try:
-                WebdriverActions.WaitForElement(
-                    driver,
-                    By.XPATH,
-                    "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[1]/div/div/button",
-                ).click()
-            except:
-                WebdriverActions.WaitForElement(
-                    driver,
-                    By.XPATH,
-                    "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[1]/button",
-                ).click()
-
-            print("Followed @" + targetUsername + " as " + username)
-            time.sleep(2)
-            driver.quit()
+            interactions.append(
+                WebdriverActions.FollowProfile(targetUsername, username)
+            )
+        return interactions
 
     def LikePostsOfUsernamesProfiles(targetUsernames, count, username):
+        interactions = []
         for targetUsername in targetUsernames:
             driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
             driver.get("https://instagram.com/")
@@ -376,6 +391,14 @@ class WebdriverActions:
                     By.XPATH,
                     "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/div[3]/article/div[1]/div/div[1]/div[1]/a",
                 ).click()
+            interactions.append(
+                WebdriverActions.LogInteraction(
+                    targetUsername,
+                    username,
+                    "Liked post.",
+                    {"Link": driver.current_url},
+                )
+            )
             WebdriverActions.WaitForElement(
                 driver,
                 By.XPATH,
@@ -393,14 +416,22 @@ class WebdriverActions:
                     By.XPATH,
                     "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[1]/span[1]/button",
                 ).click()
+                interactions.append(
+                    WebdriverActions.LogInteraction(
+                        targetUsername,
+                        username,
+                        "Liked post.",
+                        {"Link": driver.current_url},
+                    )
+                )
                 WebdriverActions.WaitForElement(
                     driver,
                     By.XPATH,
                     "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[1]/div/div/div[2]/button",
                 ).click()
-            print("Liked @" + targetUsername + " profile posts as " + username)
-            time.sleep(2)
+
             driver.quit()
+        return interactions
 
     def ScrapeHashtag(hashtag, username):
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
@@ -548,11 +579,6 @@ class WebdriverActions:
                         {"Message": "Test"},
                     )
 
-                    # target = IGTarget.objects.get_or_create(
-                    #     username=user["username"], foundBy=InstagramAccount.objects.get(username=username))
-                    # interaction = Interaction(target, foundBy=InstagramAccount.objects.all().values("foundBy_id").get(username=user["username"]), context=("Follower scraping | " + link))
-                    # target.save()
-                    # interaction.save()
                 return users
         driver.quit()
         print("\nScraped followers.\n\n")
@@ -564,22 +590,20 @@ class WebdriverActions:
             return "/chromedriver"
         return "chromedrive"
 
-    def LogIgTarget(
-        targetUsername, foundByUsername, interactionContext, interactionData
-    ):
-        foundBy = InstagramAccount.objects.get(username=foundByUsername)
-        print(foundByUsername)
+    def LogInteraction(targetUsername, loggedInAs, context, data=None):
+        foundBy = InstagramAccount.objects.get(username=loggedInAs)
         target = IGTarget.objects.get_or_create(
             username=targetUsername, foundBy=foundBy
         )
-        print(foundBy)
         interaction = Interaction(
             reachedWhileLoggedInAs=foundBy,
             reachedAccount=target[0],
-            context=interactionContext,
-            data=interactionData,
+            context=context,
         )
+        if data is not None:
+            interaction.data = data
         interaction.save()
+        return interaction
 
     def GetWebDriver(userAgent):
         chromeOptions = WebdriverActions.GetOptions(userAgent)
