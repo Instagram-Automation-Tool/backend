@@ -2,17 +2,17 @@ from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
 from django.template import loader
 from . import WebDriverManager
-from IgBotApp.models import InstagramAccount
+from IgBotApp.models import InstagramAccount, Interaction
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.response import Response
 from rest_framework import status
 import json
 
+
 # region API endpoints
 def requestStoreCredentials(request):
     WebDriverManager.WebdriverActions.StoreLoginCredentials(
-        request.GET.get("username"), request.GET.get("password")
-    )
+        request.GET.get("username"), request.GET.get("password"))
     return HttpResponse("Stored credentials")
 
 
@@ -24,17 +24,13 @@ def requestLoadCredentials(request):
 def requestFollowProfile(request):
     return HttpResponse(
         WebDriverManager.WebdriverActions.FollowProfile(
-            request.GET.get("link", ""), request.GET.get("username")
-        )
-    )
+            request.GET.get("link", ""), request.GET.get("username")))
 
 
 def requestLikePost(request):
     return HttpResponse(
-        WebDriverManager.WebdriverActions.LikePost(
-            request.GET.get("link", ""), request.GET.get("username")
-        )
-    )
+        WebDriverManager.WebdriverActions.LikePost(request.GET.get(
+            "link", ""), request.GET.get("username")))
 
 
 def requestCommentOnPost(request):
@@ -43,8 +39,7 @@ def requestCommentOnPost(request):
             request.GET.get("link"),
             request.GET.get("comment"),
             request.GET.get("username"),
-        )
-    )
+        ))
 
 
 def requestCommentOnProfilePosts(request):
@@ -54,8 +49,7 @@ def requestCommentOnProfilePosts(request):
             request.GET.get("comments").split(","),
             request.GET.get("like") == "on",
             request.GET.get("username"),
-        )
-    )
+        ))
 
 
 def requestFollowUsernames(request):
@@ -63,8 +57,7 @@ def requestFollowUsernames(request):
         WebDriverManager.WebdriverActions.FollowUsernames(
             request.GET.get("targets").replace(" ", "").split(","),
             request.GET.get("username"),
-        )
-    )
+        ))
 
 
 def requestLikePostsOfUsernamesProfiles(request):
@@ -73,8 +66,7 @@ def requestLikePostsOfUsernamesProfiles(request):
             request.GET.get("targets").replace(" ", "").split(","),
             request.GET.get("count"),
             request.GET.get("username"),
-        )
-    )
+        ))
 
 
 def requestScrapeHashtag(request):
@@ -83,9 +75,7 @@ def requestScrapeHashtag(request):
             WebDriverManager.WebdriverActions.ScrapeHashtag(
                 request.GET.get("hashtag"),
                 request.GET.get("username"),
-            )
-        )
-    )
+            )))
 
 
 def requestScrapeFollowers(request):
@@ -95,12 +85,11 @@ def requestScrapeFollowers(request):
                 request.GET.get("link"),
                 request.GET.get("amount"),
                 request.GET.get("username"),
-            )
-        )
-    )
+            )))
 
 
 # endregion
+
 
 # region showcase panel
 def PanelView(request):
@@ -112,8 +101,17 @@ def PanelView(request):
 
 # endregion
 
+
 # get all acounts
 class AccountsRetrieveUpdateAPIView(RetrieveUpdateAPIView):
+
     def retrieve(self, request):
         accounts = InstagramAccount.objects.all().values()
         return Response(accounts, status=status.HTTP_200_OK)
+
+
+class InteractionsRetrieveAPIView(RetrieveUpdateAPIView):
+
+    def retrieve(self, request):
+        interactions = Interaction.objects.all().values()
+        return Response(interactions, status=status.HTTP_200_OK)

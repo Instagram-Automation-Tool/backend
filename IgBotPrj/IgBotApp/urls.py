@@ -1,8 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
-from .views import (
-    AccountsRetrieveUpdateAPIView,
-)
+from .views import (AccountsRetrieveUpdateAPIView, InteractionsRetrieveAPIView)
 from . import views
 
 urlpatterns = [
@@ -23,8 +21,12 @@ urlpatterns = [
     path("comment", views.requestCommentOnPost),
     path("commentOnProfilePosts", views.requestCommentOnProfilePosts),
     path("followUsernames", views.requestFollowUsernames),
-    path("likePostsOfUsernamesProfiles", views.requestLikePostsOfUsernamesProfiles),
+    path("likePostsOfUsernamesProfiles",
+         views.requestLikePostsOfUsernamesProfiles),
     path("scrapeHashtag", views.requestScrapeHashtag),
     path("scrapeFollowers", views.requestScrapeFollowers),
-    path("accounts", AccountsRetrieveUpdateAPIView.as_view(), name="user"),
+    path("accounts", AccountsRetrieveUpdateAPIView.as_view(), name='user'),
+    path("interactions",
+         InteractionsRetrieveAPIView.as_view(),
+         name='interactions')
 ]
