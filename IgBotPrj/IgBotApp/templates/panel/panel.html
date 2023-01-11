@@ -127,6 +127,12 @@
       <label>Scrape profiles on hashtag</label>
       <label>Hashtag</label>
       <input id="hashtag" type="text" name="hashtag" value="paintings" />
+      <label>Max number of users to scrape</label>
+      <input id="noOfFollowersToScrape" type="number" name="noOfFollowersToScrape" value="paintings" />
+      <label>Max number of posts to scrape</label>
+      <input id="noOfPostsToScrape" type="number" name="noOfPostsToScrape" value="paintings" />
+      <label>Hashtag Scraping Option (0-top posts, 1-random posts, 2-all)</label>
+      <input id="hashtagOption" type="number" name="hashtagOption" value="0" />
       <div class="profil
       es-display">
         {% if accounts %}
