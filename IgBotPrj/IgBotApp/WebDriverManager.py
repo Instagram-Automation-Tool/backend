@@ -203,7 +203,6 @@ class WebdriverActions:
     def LoadSession(username):
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get("https://www.instagram.com/")
-
         WebdriverActions.LoadCookies(
             driver,
             username,
@@ -250,6 +249,7 @@ class WebdriverActions:
             "new_stories": new_stories,
             "old_stories": old_stories,
         }
+        driver.quit()
         return json.dumps(httpResponse)
 
     def FollowProfile(target, username):
