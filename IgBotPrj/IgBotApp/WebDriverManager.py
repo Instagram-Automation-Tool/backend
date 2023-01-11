@@ -210,6 +210,47 @@ class WebdriverActions:
 
         driver.get("https://instagram.com/" + username)
 
+    def FetchNotifications(username):
+        driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
+        driver.get("https://www.instagram.com/accounts/activity")
+        WebdriverActions.LoadCookies(driver, username)
+        appId = ""
+        for entry in driver.get_log("performance"):
+            if "X-IG-App-ID" in entry["message"]:
+                appId = re.findall(
+                    'X-IG-App-ID":"(.*?)"',
+                    "".join(entry["message"]),
+                )[0]
+                break
+
+        session = requests.Session()
+        cookies = (
+            InstagramAccount.objects.all().values("cookies").get(username=username)
+        )
+        jar = requests.cookies.RequestsCookieJar()
+        for cookie in cookies["cookies"]:
+            jar.set(
+                cookie["name"],
+                cookie["value"],
+                domain=cookie["domain"],
+                path=cookie["path"],
+            )
+
+        session.cookies = jar
+
+        session.headers.update({"x-ig-app-id": appId})
+        response = session.get("https://www.instagram.com/api/v1/news/inbox/")
+        responseJson = response.json()
+        counts = responseJson["counts"]
+        new_stories = responseJson["new_stories"]
+        old_stories = responseJson["old_stories"]
+        httpResponse = {
+            "counts": counts,
+            "new_stories": new_stories,
+            "old_stories": old_stories,
+        }
+        return json.dumps(httpResponse)
+
     def FollowProfile(target, username):
         if not WebdriverActions.CheckThresholds(
             Interaction.InteractionType.FOLLOW, username, Thresholds.follow_limit

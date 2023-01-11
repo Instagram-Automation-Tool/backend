@@ -11,13 +11,24 @@
       <h1 style="font-size: medium">Sprint API Application Demonstration</h1>
     </div>
 
-    <form class="form-group" action="/storecredentials" method="get">
+    <form class="form-group" action="/storeCredentials" method="get">
       <input id="username" type="text" name="username" value="" />
       <input id="password" type="password" name="password" value="" />
       <button type="submit" class="btn">Remember credentials</button>
     </form>
-    <form class="form-group" action="loadcredentials" method="get">
+    <form class="form-group" action="loadCredentials" method="get">
       <label>Load session</label>
+      <div class="profiles-display">
+        {% if accounts %}
+        {% for account in accounts %}
+        <button type="submit" id="username" name="username" value={{account.username}}
+          class="btn">{{account.username}}</button>
+        {% endfor %}
+        {% endif %}
+      </div>
+    </form>
+    <form class="form-group" action="notifications" method="get">
+      <label>Fetch notifications</label>
       <div class="profiles-display">
         {% if accounts %}
         {% for account in accounts %}
