@@ -87,14 +87,16 @@ def requestLikePostsOfUsernamesProfiles(request):
 
 
 def requestScrapeHashtag(request):
+    args = {}
+    args["username"] = "cold.stored.entertainment"
     return HttpResponse(
         json.dumps(
             WebDriverManager.WebdriverActions.ScrapeHashtag(
                 request.GET.get("hashtag"),
                 request.GET.get("username"),
-                request.GET.get("noOfFollowersToScrape"),
-                request.GET.get("noOfPostsToScrape"),
-                request.GET.get("hashtagOption"),
+                request.GET.get("noOfFollowersToScrape", 100),
+                request.GET.get("noOfPostsToScrape", 10),
+                request.GET.get("hashtagOption", 0),
             )
         )
     )

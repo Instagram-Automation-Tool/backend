@@ -473,6 +473,9 @@ class WebdriverActions:
 
     def LikePostsOfUsernamesProfiles(targetUsernames, count, username):
         interactions = []
+        driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
+        driver.get("https://instagram.com/")
+        WebdriverActions.LoadCookies(driver, username)
         for targetUsername in targetUsernames:
             if not WebdriverActions.CheckThresholds(
                 Interaction.InteractionType.LIKE,
@@ -480,9 +483,6 @@ class WebdriverActions:
                 Thresholds.like_limit,
             ):
                 return "Threshold reached"
-            driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
-            driver.get("https://instagram.com/")
-            WebdriverActions.LoadCookies(driver, username)
             driver.get("https://instagram.com/" + targetUsername)
             try:
                 WebdriverActions.WaitForElement(
@@ -491,11 +491,14 @@ class WebdriverActions:
                     "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/div[2]/article/div[1]/div/div[1]/div[1]/a",
                 ).click()
             except:
-                WebdriverActions.WaitForElement(
-                    driver,
-                    By.XPATH,
-                    "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/div[3]/article/div[1]/div/div[1]/div[1]/a",
-                ).click()
+                try:
+                    WebdriverActions.WaitForElement(
+                        driver,
+                        By.XPATH,
+                        "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/div[3]/article/div[1]/div/div[1]/div[1]/a",
+                    ).click()
+                except:
+                    continue
             interactions.append(
                 WebdriverActions.LogInteraction(
                     Interaction.InteractionType.LIKE,
@@ -548,10 +551,13 @@ class WebdriverActions:
     def ScrapeHashtag(
         hashtag,
         username,
-        noOfFollowersToScrape,
-        noOfPostsToScrape,
-        hashtagScrapingOption,
+        noOfFollowersToScrape: int,
+        noOfPostsToScrape: int,
+        hashtagScrapingOption: HashtagScrapingOptions,
     ):
+        noOfFollowersToScrape = int(noOfFollowersToScrape)
+        noOfPostsToScrape = int(noOfPostsToScrape)
+        hashtagScrapingOption = int(hashtagScrapingOption)
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get("https://www.instagram.com/explore/tags/" + hashtag)
         appId = ""
@@ -637,19 +643,22 @@ class WebdriverActions:
                         )
                         is not None
                     ):
-                        for userField in json.loads(
-                            driver.execute_cdp_cmd(
-                                "Network.getResponseBody",
-                                {
-                                    "requestId": json.loads(entry["message"])[
-                                        "message"
-                                    ]["params"]["requestId"]
-                                },
-                            )["body"]
-                        )["comments"]:
-                            if userField["user"]["username"] in ids:
-                                continue
-                            ids.append(userField["user"]["username"])
+                        try:
+                            for userField in json.loads(
+                                driver.execute_cdp_cmd(
+                                    "Network.getResponseBody",
+                                    {
+                                        "requestId": json.loads(entry["message"])[
+                                            "message"
+                                        ]["params"]["requestId"]
+                                    },
+                                )["body"]
+                            )["comments"]:
+                                if userField["user"]["username"] in ids:
+                                    continue
+                                ids.append(userField["user"]["username"])
+                        except:
+                            continue
         return ids
 
     def ScrapeFollowers(link, amount, username):
@@ -791,7 +800,7 @@ class WebdriverActions:
     def WaitForElement(driver, by, value):
         wait = WebDriverWait(
             driver,
-            timeout=10,
+            timeout=4,
             poll_frequency=1,
             ignored_exceptions=[
                 ElementNotVisibleException,
