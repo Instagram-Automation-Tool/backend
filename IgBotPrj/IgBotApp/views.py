@@ -92,9 +92,9 @@ def requestScrapeHashtag(request):
             WebDriverManager.WebdriverActions.ScrapeHashtag(
                 request.GET.get("hashtag"),
                 request.GET.get("username"),
-                int(request.GET.get("noOfFollowersToScrape")),
-                int(request.GET.get("noOfPostsToScrape")),
-                int(request.GET.get("hashtagOption")),
+                request.GET.get("noOfFollowersToScrape"),
+                request.GET.get("noOfPostsToScrape"),
+                request.GET.get("hashtagOption"),
             )
         )
     )

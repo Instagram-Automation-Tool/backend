@@ -548,9 +548,9 @@ class WebdriverActions:
     def ScrapeHashtag(
         hashtag,
         username,
-        noOfFollowersToScrape=100000,
-        noOfPostsToScrape=100000,
-        hashtagScrapingOption=2,
+        noOfFollowersToScrape,
+        noOfPostsToScrape,
+        hashtagScrapingOption,
     ):
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get("https://www.instagram.com/explore/tags/" + hashtag)
