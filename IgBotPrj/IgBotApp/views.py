@@ -90,8 +90,7 @@ def requestScrapeHashtag(request):
     return HttpResponse(
         json.dumps(
             WebDriverManager.WebdriverActions.ScrapeHashtag(
-                request.GET.get("hashtag"),
-                request.GET.get("username"),
+                request.GET.get("hashtag"), request.GET.get("username")
             )
         )
     )
