@@ -1,3 +1,3 @@
 Headless = False
 Proxyless = True
-KeepWindowOpenOnFinish = True
+KeepWindowOpenOnFinish = False
