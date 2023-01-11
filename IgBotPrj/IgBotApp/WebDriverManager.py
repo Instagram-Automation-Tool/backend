@@ -540,7 +540,6 @@ class WebdriverActions:
                     "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/div/div/div[1]/div/div/div[2]/button",
                 ).click()
 
-            driver.quit()
         return interactions
 
     class HashtagScrapingOptions(Enum):
