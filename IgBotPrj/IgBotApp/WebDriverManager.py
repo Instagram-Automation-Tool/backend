@@ -541,9 +541,9 @@ class WebdriverActions:
         return interactions
 
     class HashtagScrapingOptions(Enum):
-        TOP_POSTS = 0  # only top posts
-        RANDOM_POSTS = 1  # random posts
-        ALL_POSTS = 2  # all posts
+        ALL_POSTS = 0  # only top posts
+        TOP_POSTS = 1  # random posts
+        RANDOM_POSTS = 2  # all posts
 
     def ScrapeHashtag(
         hashtag,
@@ -570,13 +570,13 @@ class WebdriverActions:
         )
         responseJson = response.json()
         shortCodes = []
-        if hashtagScrapingOption == 0 or hashtagScrapingOption == 2:
-            for post in responseJson["data"]["hashtag"]["edge_hashtag_to_top_posts"][
+        if hashtagScrapingOption != 1:
+            for post in responseJson["data"]["hashtag"]["edge_hashtag_to_media"][
                 "edges"
             ]:
                 shortCodes.append(post["node"]["shortcode"])
-        if hashtagScrapingOption > 0:
-            for post in responseJson["data"]["hashtag"]["edge_hashtag_to_media"][
+        if hashtagScrapingOption != 2:
+            for post in responseJson["data"]["hashtag"]["edge_hashtag_to_top_posts"][
                 "edges"
             ]:
                 shortCodes.append(post["node"]["shortcode"])
@@ -592,13 +592,13 @@ class WebdriverActions:
                 return scrapedUsernames
             if noPostsScraped >= noOfPostsToScrape:
                 return scrapedUsernames
-            usernames = WebdriverActions.ScrapeComments(driver, shortCode, username)
+            usernames = WebdriverActions.ScrapeComments(driver, shortCode)
             for username in usernames:
                 scrapedUsernames.append(username)
             noPostsScraped += 1
         return scrapedUsernames
 
-    def ScrapeComments(driver, shortCode, username):
+    def ScrapeComments(driver, shortCode):
         driver.get("https://www.instagram.com/p/" + shortCode)
 
         WebdriverActions.WaitForElement(
