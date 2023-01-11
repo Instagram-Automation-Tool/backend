@@ -96,22 +96,19 @@ class WebdriverActions:
                     driver,
                     By.XPATH,
                     "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/ul/li[2]/a/div/span",
-                ).text
-            )
+                ).text)
             followingCount = int(
                 WebdriverActions.WaitForElement(
                     driver,
                     By.XPATH,
                     "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/ul/li[3]/a/div/span",
-                ).text
-            )
+                ).text)
             postsCount = int(
                 WebdriverActions.WaitForElement(
                     driver,
                     By.XPATH,
                     "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/ul/li[1]/div/span",
-                ).text
-            )
+                ).text)
             profilePictureURL = WebdriverActions.WaitForElement(
                 driver,
                 By.XPATH,
@@ -129,22 +126,19 @@ class WebdriverActions:
                         driver,
                         By.XPATH,
                         "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/section/ul/li[2]/a/div/span",
-                    ).text
-                )
+                    ).text)
                 followingCount = int(
                     WebdriverActions.WaitForElement(
                         driver,
                         By.XPATH,
                         "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/section/ul/li[3]/a/div/span",
-                    ).text
-                )
+                    ).text)
                 postsCount = int(
                     WebdriverActions.WaitForElement(
                         driver,
                         By.XPATH,
                         "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[2]/div[2]/section/main/div/header/section/ul/li[1]/div/span",
-                    ).text
-                )
+                    ).text)
                 profilePictureURL = WebdriverActions.WaitForElement(
                     driver,
                     By.XPATH,
@@ -161,22 +155,19 @@ class WebdriverActions:
                         driver,
                         By.XPATH,
                         "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/div[1]/div[2]/section/main/div/header/section/ul/li[2]/a/div/span/span",
-                    ).text
-                )
+                    ).text)
                 followingCount = int(
                     WebdriverActions.WaitForElement(
                         driver,
                         By.XPATH,
                         "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/div[1]/div[2]/section/main/div/header/section/ul/li[3]/a/div/span/span",
-                    ).text
-                )
+                    ).text)
                 postsCount = int(
                     WebdriverActions.WaitForElement(
                         driver,
                         By.XPATH,
                         "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/div[1]/div[2]/section/main/div/header/section/ul/li[1]/div/span/span",
-                    ).text
-                )
+                    ).text)
                 # make try get profilepicurl function and more
                 profilePictureURL = WebdriverActions.WaitForElement(
                     driver,
@@ -253,41 +244,57 @@ class WebdriverActions:
 
     def FollowProfile(target, username):
         if not WebdriverActions.CheckThresholds(
-            Interaction.InteractionType.FOLLOW, username, Thresholds.follow_limit
-        ):
+                Interaction.InteractionType.FOLLOW, username,
+                Thresholds.follow_limit):
             return "Threshold reached"
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get("https://www.instagram.com/" + target)
 
         WebdriverActions.LoadCookies(driver, username)
-        if (
+        try:
+            if (WebdriverActions.WaitForElement(
+                    driver,
+                    By.XPATH,
+                    "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[1]/button/div/div[1]",
+            ).text == "Following"):
+                return WebdriverActions.LogInteraction(
+                    Interaction.InteractionType.UNKNOWN,
+                    target,
+                    username,
+                    "Tried to follow profile, already following.",
+                )
             WebdriverActions.WaitForElement(
                 driver,
                 By.XPATH,
-                "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[1]/button/div/div[1]",
-            ).text
-            == "Following"
-        ):
-            return WebdriverActions.LogInteraction(
-                Interaction.InteractionType.UNKNOWN,
-                target,
-                username,
-                "Tried to follow profile, already following.",
-            )
-        WebdriverActions.WaitForElement(
-            driver,
-            By.XPATH,
-            "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[1]/button",
-        ).click()
+                "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[1]/button",
+            ).click()
+        except:
+            if (WebdriverActions.WaitForElement(
+                    driver,
+                    By.XPATH,
+                    "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[1]/div/div[1]/button/div/div",
+            ).text == "Following"):
+                return WebdriverActions.LogInteraction(
+                    Interaction.InteractionType.UNKNOWN,
+                    target,
+                    username,
+                    "Tried to follow profile, already following.",
+                )
+            WebdriverActions.WaitForElement(
+                driver,
+                By.XPATH,
+                "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/header/section/div[1]/div[1]/div/div[1]/button",
+            ).click()
+
         driver.quit
         return WebdriverActions.LogInteraction(
-            Interaction.InteractionType.FOLLOW, target, username, "Followed profile"
-        )
+            Interaction.InteractionType.FOLLOW, target, username,
+            "Followed profile")
 
     def LikePost(link, username):
         if not WebdriverActions.CheckThresholds(
-            Interaction.InteractionType.LIKE, username, Thresholds.like_limit
-        ):
+                Interaction.InteractionType.LIKE, username,
+                Thresholds.like_limit):
             return "Threshold reached"
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get(urllib.parse.unquote(link))
@@ -314,8 +321,8 @@ class WebdriverActions:
 
     def CommentOnPost(link, comment, username):
         if not WebdriverActions.CheckThresholds(
-            Interaction.InteractionType.COMMENT, username, Thresholds.comment_limit
-        ):
+                Interaction.InteractionType.COMMENT, username,
+                Thresholds.comment_limit):
             return "Threshold reached"
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
         driver.get(link)
@@ -343,14 +350,17 @@ class WebdriverActions:
             targetUsername,
             username,
             "Commented on post.",
-            {"Link": link, "Comment": comment},
+            {
+                "Link": link,
+                "Comment": comment
+            },
         )
 
     def CommentOnProfilePosts(targetUsername, comments, like, username):
         if not WebdriverActions.CheckThresholds(
-            Interaction.InteractionType.COMMENT,
-            username,
-            Thresholds.comment_limit,
+                Interaction.InteractionType.COMMENT,
+                username,
+                Thresholds.comment_limit,
         ):
             return "Threshold reached"
         driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
@@ -364,8 +374,8 @@ class WebdriverActions:
             "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div/div[2]/article/div[1]/div/div[1]/div[1]/a",
         ).click()
         if not WebdriverActions.CheckThresholds(
-            Interaction.InteractionType.COMMENT, username, Thresholds.comment_limit
-        ):
+                Interaction.InteractionType.COMMENT, username,
+                Thresholds.comment_limit):
             return "Threshold reached"
         if len(comments) > 0:
             if like:
@@ -395,16 +405,18 @@ class WebdriverActions:
                     targetUsername,
                     username,
                     "Commented on post.",
-                    {"Comment": comments[0], "alsoLike": like},
-                )
-            )
+                    {
+                        "Comment": comments[0],
+                        "alsoLike": like
+                    },
+                ))
 
         if len(comments) > 1:
             for comment in comments[1:]:
                 if not WebdriverActions.CheckThresholds(
-                    Interaction.InteractionType.COMMENT,
-                    username,
-                    Thresholds.comment_limit,
+                        Interaction.InteractionType.COMMENT,
+                        username,
+                        Thresholds.comment_limit,
                 ):
                     return "Threshold reached"
                 if like:
@@ -434,9 +446,11 @@ class WebdriverActions:
                         targetUsername,
                         username,
                         "Commented on post.",
-                        {"Comment": comment, "alsoLike": like},
-                    )
-                )
+                        {
+                            "Comment": comment,
+                            "alsoLike": like
+                        },
+                    ))
         return interactions
 
     # paramaters, in order: array of target profile usernames, amount of posts to like (if 0, it will like all posts on profile), array of comments to be used on profiles, bool like posts or not, bool follow or not, messages array with messages to send to profiles, username param (login username)
@@ -444,17 +458,16 @@ class WebdriverActions:
         interactions = []
         for targetUsername in targetUsernames:
             interactions.append(
-                WebdriverActions.FollowProfile(targetUsername, username)
-            )
+                WebdriverActions.FollowProfile(targetUsername, username))
         return interactions
 
     def LikePostsOfUsernamesProfiles(targetUsernames, count, username):
         interactions = []
         for targetUsername in targetUsernames:
             if not WebdriverActions.CheckThresholds(
-                Interaction.InteractionType.LIKE,
-                username,
-                Thresholds.like_limit,
+                    Interaction.InteractionType.LIKE,
+                    username,
+                    Thresholds.like_limit,
             ):
                 return "Threshold reached"
             driver = WebdriverActions.GetWebDriver(USER_AGENTS[1])
@@ -480,8 +493,7 @@ class WebdriverActions:
                     username,
                     "Liked post.",
                     {"Link": driver.current_url},
-                )
-            )
+                ))
             WebdriverActions.WaitForElement(
                 driver,
                 By.XPATH,
@@ -506,8 +518,7 @@ class WebdriverActions:
                         username,
                         "Liked post.",
                         {"Link": driver.current_url},
-                    )
-                )
+                    ))
                 WebdriverActions.WaitForElement(
                     driver,
                     By.XPATH,
@@ -554,25 +565,19 @@ class WebdriverActions:
         finally:
             ids = []
             for entry in driver.get_log("performance"):
-                if search(
-                    re.escape("/comments/?can_support_threading=true"), entry["message"]
-                ):
-                    if (
-                        json.loads(entry["message"])["message"]["params"].get(
-                            "response"
-                        )
-                        is not None
-                    ):
+                if search(re.escape("/comments/?can_support_threading=true"),
+                          entry["message"]):
+                    if (json.loads(entry["message"])["message"]["params"].get(
+                            "response") is not None):
                         for userField in json.loads(
-                            driver.execute_cdp_cmd(
-                                "Network.getResponseBody",
-                                {
-                                    "requestId": json.loads(entry["message"])[
-                                        "message"
-                                    ]["params"]["requestId"]
-                                },
-                            )["body"]
-                        )["comments"]:
+                                driver.execute_cdp_cmd(
+                                    "Network.getResponseBody",
+                                    {
+                                        "requestId":
+                                        json.loads(entry["message"])["message"]
+                                        ["params"]["requestId"]
+                                    },
+                                )["body"])["comments"]:
                             if userField["user"]["username"] in ids:
                                 continue
                             ids.append(userField["user"]["username"])
@@ -616,10 +621,8 @@ class WebdriverActions:
                 session = requests.Session()
 
                 cookies = (
-                    InstagramAccount.objects.all()
-                    .values("cookies")
-                    .get(username=username)
-                )
+                    InstagramAccount.objects.all().values("cookies").get(
+                        username=username))
 
                 jar = requests.cookies.RequestsCookieJar()
                 for cookie in cookies["cookies"]:
@@ -637,12 +640,9 @@ class WebdriverActions:
 
                 session.headers.update({"x-ig-app-id": appId[0]})
                 response = session.get(
-                    "https://www.instagram.com/api/v1/friendships/"
-                    + id[0]
-                    + "/followers/?count="
-                    + amount
-                    + "&search_surface=follow_list_page"
-                )
+                    "https://www.instagram.com/api/v1/friendships/" + id[0] +
+                    "/followers/?count=" + amount +
+                    "&search_surface=follow_list_page")
                 usersJson = response.json()["users"]
                 for user in usersJson:
                     users.append(user["username"])
@@ -666,9 +666,8 @@ class WebdriverActions:
         data=None,
     ):
         foundBy = InstagramAccount.objects.get(username=loggedInAs)
-        target = IGTarget.objects.get_or_create(
-            username=targetUsername, foundBy=foundBy
-        )
+        target = IGTarget.objects.get_or_create(username=targetUsername,
+                                                foundBy=foundBy)
         interaction = Interaction(
             reachedWhileLoggedInAs=foundBy,
             reachedAccount=target[0],
@@ -681,11 +680,11 @@ class WebdriverActions:
         return interaction
 
     def CheckThresholds(interactionType, username, limit):
-        date_from = datetime.datetime.now().astimezone(pytz.utc) - datetime.timedelta(
-            hours=1
-        )
+        date_from = datetime.datetime.now().astimezone(
+            pytz.utc) - datetime.timedelta(hours=1)
         interactionCount = Interaction.objects.filter(
-            reachedWhileLoggedInAs=InstagramAccount.objects.get(username=username),
+            reachedWhileLoggedInAs=InstagramAccount.objects.get(
+                username=username),
             interactionType=interactionType,
             reachedAt__range=(date_from, datetime.datetime.now()),
         ).count()
@@ -709,7 +708,8 @@ class WebdriverActions:
         if dev_options.Headless:
             chromeOptions.add_argument("--headless")
         if dev_options.Proxyless != True:
-            chromeOptions.add_argument("--proxy-server=%s" % "hostname" + ":" + "port")
+            chromeOptions.add_argument("--proxy-server=%s" % "hostname" + ":" +
+                                       "port")
         if dev_options.KeepWindowOpenOnFinish == True:
             chromeOptions.add_experimental_option("detach", True)
         chromeOptions.add_argument(userAgent)
@@ -729,14 +729,10 @@ class WebdriverActions:
 
         try:
             element = None
-            element = wait.until(
-                EC.element_to_be_clickable(
-                    (
-                        by,
-                        value,
-                    )
-                )
-            )
+            element = wait.until(EC.element_to_be_clickable((
+                by,
+                value,
+            )))
         finally:
             return element
 
@@ -767,18 +763,15 @@ class WebdriverActions:
         account.save()
 
     def LoadCookies(driver, username):
-        cookies = (
-            InstagramAccount.objects.all().values("cookies").get(username=username)
-        )
+        cookies = (InstagramAccount.objects.all().values("cookies").get(
+            username=username))
         for cookie in cookies["cookies"]:
-            driver.add_cookie(
-                {
-                    "name": cookie["name"],
-                    "value": cookie["value"],
-                    "path": cookie["path"],
-                    "domain": cookie["domain"],
-                    "secure": cookie["secure"],
-                }
-            )
+            driver.add_cookie({
+                "name": cookie["name"],
+                "value": cookie["value"],
+                "path": cookie["path"],
+                "domain": cookie["domain"],
+                "secure": cookie["secure"],
+            })
 
         driver.refresh()
