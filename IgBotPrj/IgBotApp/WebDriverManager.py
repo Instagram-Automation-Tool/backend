@@ -588,6 +588,7 @@ class WebdriverActions:
         noPostsScraped = 0
         for shortCode in shortCodes:
             if len(scrapedUsernames) >= noOfFollowersToScrape:
+                del scrapedUsernames[noOfFollowersToScrape:]
                 return scrapedUsernames
             if noPostsScraped >= noOfPostsToScrape:
                 return scrapedUsernames
@@ -605,10 +606,10 @@ class WebdriverActions:
             By.XPATH,
             "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div[1]/div/article/div/div[2]/div/div[2]/div[1]/div/div[2]/a",
         ).click()
-        howManyTimesToScrollAndLoad = 12
+        howManyTimesToScrollAndLoad = 10
         try:
             while howManyTimesToScrollAndLoad > 0:
-                time.sleep(2)
+                time.sleep(0.2)
                 driver.execute_script("window.scrollBy(0,2000)")
                 el = WebdriverActions.WaitForElement(
                     driver,
