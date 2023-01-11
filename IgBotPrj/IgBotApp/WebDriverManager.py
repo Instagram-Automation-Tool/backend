@@ -601,11 +601,15 @@ class WebdriverActions:
     def ScrapeComments(driver, shortCode):
         driver.get("https://www.instagram.com/p/" + shortCode)
 
-        WebdriverActions.WaitForElement(
-            driver,
-            By.XPATH,
-            "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div[1]/div/article/div/div[2]/div/div[2]/div[1]/div/div[2]/a",
-        ).click()
+        try:
+            WebdriverActions.WaitForElement(
+                driver,
+                By.XPATH,
+                "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/section/main/div[1]/div/article/div/div[2]/div/div[2]/div[1]/div/div[2]/a",
+            ).click()
+        except:
+            # no comments
+            return []
         howManyTimesToScrollAndLoad = 10
         try:
             while howManyTimesToScrollAndLoad > 0:
