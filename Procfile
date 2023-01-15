@@ -1,1 +1,1 @@
-web: ls
+web: sh -c "cd IgBotPrj/IgBotPrj && gunicorn IgBotPrj.wsgi:application --bind 0.0.0.0:8000"
