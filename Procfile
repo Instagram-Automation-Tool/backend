@@ -1,1 +1,1 @@
-web: gunicorn --chdir /IgBotPrj "IgBotPrj.wsgi"
+web: gunicorn IgBotPrj.wsgi.application
