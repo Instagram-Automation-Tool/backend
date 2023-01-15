@@ -1,1 +1,1 @@
-web: gunicorn 'IgBotApp.wsgi'
+web: gunicorn --bind http://0.0.0.0:7454 wsgi:application
