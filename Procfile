@@ -1,1 +1,1 @@
-web: gunicorn --bind http://0.0.0.0:7454 wsgi:application
+web: gunicorn wsgi:application
