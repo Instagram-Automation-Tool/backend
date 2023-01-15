@@ -1,1 +1,1 @@
-web: gunicorn 'IgBotProj.wsgi'
+web: gunicorn 'IgBotPrj.wsgi'
