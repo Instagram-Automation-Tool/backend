@@ -1,1 +1,1 @@
-web: gunicorn wsgi:IgBotPrj
+web: ls
